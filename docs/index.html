@@ -181,18 +181,18 @@
 <section id="hexgrids" class="title-slide slide level1 center">
 <h1>Hexgrids</h1>
 
-</section>
-<section id="review-of-projections-and-grids" class="slide level2 center">
+<img data-src="../img/hexgrids.png" class="r-stretch"></section>
+<section id="review-of-projections-and-grids" class="slide level2 center" style="font-size:0.7em">
 <h2>Review of projections and grids</h2>
 <p>Slides here with terms, then fadein out to explanation, so students can try to explain first</p>
 </section>
-<section id="projections-are-not-perfect" class="slide level2 center">
+<section id="projections-are-not-perfect" class="slide level2 center" style="font-size:0.7em">
 <h2>Projections are not perfect</h2>
 <ul>
 <li>distortions</li>
 </ul>
 </section>
-<section id="square-grids" class="slide level2 center">
+<section id="square-grids" class="slide level2 center" style="font-size:0.7em">
 <h2>Square grids</h2>
 <ul>
 <li><p>Conceptually simple</p></li>
@@ -205,16 +205,51 @@
 </ul></li>
 </ul>
 </section>
-<section id="icosahedron-based-map-projections" class="slide level2 center">
+<section id="icosahedron-based-map-projections" class="slide level2 center" style="font-size:0.7em">
 <h2>Icosahedron-based map projections</h2>
+<div class="r-stack">
+<div class="fragment absolute fade-out" data-fragment-index="1" style="">
+<p><img data-src="../img/icosohedral.png"></p>
+</div>
+<div class="fragment absolute fade-in-then-out" data-fragment-index="1" style="">
 <div style="text-align: center;">
-  <video controls="" autoplay="" loop="" muted="" playsinline="" style="max-width: 95%; max-height: 65vh; width: auto; height: auto;">
+  <video id="dymaxion-animation" controls="" loop="" muted="" playsinline="" preload="metadata" style="display: block; max-width: 90%; max-height: 52vh; width: auto; height: auto; margin: 0 auto; object-fit: contain;">
     <source src="https://upload.wikimedia.org/wikipedia/commons/9/9e/Dymaxion_2003_animation_remastered.webm" type="video/webm">
     Your browser does not support embedded WebM video.
   </video>
 </div>
+<script>
+window.addEventListener("load", function () {
+  const video = document.getElementById("dymaxion-animation");
+
+  if (!video || typeof Reveal === "undefined") return;
+
+  Reveal.on("fragmentshown", function (event) {
+    if (event.fragment.contains(video)) {
+      video.currentTime = 0;
+      video.play().catch(function () {});
+    }
+  });
+
+  Reveal.on("fragmenthidden", function (event) {
+    if (event.fragment.contains(video)) {
+      video.pause();
+      video.currentTime = 0;
+    }
+  });
+
+  Reveal.on("slidechanged", function (event) {
+    if (!event.currentSlide.contains(video)) {
+      video.pause();
+      video.currentTime = 0;
+    }
+  });
+});
+</script>
 <div class="attribution">
 <p>Animation by <a href="https://commons.wikimedia.org/wiki/User:Annaaurora">Annaaurora</a>, based on Chris Rywalt’s <em>Dymaxion Projection Animation</em> and NASA’s <em>Blue Marble: Next Generation</em> imagery. <a href="https://commons.wikimedia.org/wiki/File:Dymaxion_2003_animation_remastered.webm">Wikimedia Commons</a>, <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0 1.0</a>.</p>
+</div>
+</div>
 </div>
 </section>
 <section id="section" class="slide level2 center">
