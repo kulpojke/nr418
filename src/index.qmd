@@ -58,4 +58,4 @@ __Projects__
 
 :::
 
-{{< include annotations_lecture.qmd >}}
+{{< include hexgrids_lecture.qmd >}}

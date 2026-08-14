@@ -1,0 +1,36 @@
+# Hexgrids
+
+## Review of projections and grids
+
+Slides here with terms, then fadein out to explanation, so students can try to explain first
+
+## Projections are not perfect
+
++ distortions
+
+## Square grids
+
++ Conceptually simple
+
++ Multiple sets of coefficients needed for analysis due to edge neighbors and node neighbors
+    + Four neighbors share an edge with the focal cell
+    + Four additional neighbors touch only at a corner (node)
+    + Edge and node neighbors are different distances from the focal cell's center
+    + Analyses must therefore distinguish between edge-only (rook) and edge-plus-node (bishop) neighborhoods
+
+## Icosahedron-based map projections
+
+```{=html}
+<div style="text-align: center;">
+  <video controls autoplay loop muted playsinline
+         style="max-width: 95%; max-height: 65vh; width: auto; height: auto;">
+    <source src="https://upload.wikimedia.org/wikipedia/commons/9/9e/Dymaxion_2003_animation_remastered.webm"
+            type="video/webm">
+    Your browser does not support embedded WebM video.
+  </video>
+</div>
+```
+
+::: {.attribution}
+Animation by [Annaaurora](https://commons.wikimedia.org/wiki/User:Annaaurora), based on Chris Rywalt's *Dymaxion Projection Animation* and NASA's *Blue Marble: Next Generation* imagery. [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Dymaxion_2003_animation_remastered.webm), [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/).
+:::
