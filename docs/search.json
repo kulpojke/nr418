@@ -1,0 +1,30 @@
+[
+  {
+    "objectID": "index.html#review-of-projections-and-grids",
+    "href": "index.html#review-of-projections-and-grids",
+    "title": "NR 418",
+    "section": "Review of projections and grids",
+    "text": "Review of projections and grids\nSlides here with terms, then fadein out to explanation, so students can try to explain first"
+  },
+  {
+    "objectID": "index.html#projections-are-not-perfect",
+    "href": "index.html#projections-are-not-perfect",
+    "title": "NR 418",
+    "section": "Projections are not perfect",
+    "text": "Projections are not perfect\n\ndistortions"
+  },
+  {
+    "objectID": "index.html#square-grids",
+    "href": "index.html#square-grids",
+    "title": "NR 418",
+    "section": "Square grids",
+    "text": "Square grids\n\nConceptually simple\nMultiple sets of coefficients needed for analysis due to edge neighbors and node neighbors\n\nFour neighbors share an edge with the focal cell\nFour additional neighbors touch only at a corner (node)\nEdge and node neighbors are different distances from the focal cell’s center\nAnalyses must therefore distinguish between edge-only (rook) and edge-plus-node (bishop) neighborhoods"
+  },
+  {
+    "objectID": "index.html#icosahedron-based-map-projections",
+    "href": "index.html#icosahedron-based-map-projections",
+    "title": "NR 418",
+    "section": "Icosahedron-based map projections",
+    "text": "Icosahedron-based map projections\n\n  \n    \n    Your browser does not support embedded WebM video.\n  \n\n\nAnimation by Annaaurora, based on Chris Rywalt’s Dymaxion Projection Animation and NASA’s Blue Marble: Next Generation imagery. Wikimedia Commons, CC0 1.0."
+  }
+]

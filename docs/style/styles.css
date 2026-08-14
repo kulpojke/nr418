@@ -1,0 +1,147 @@
+.callout .callout-header,
+.callout .callout-title-container,
+.callout .callout-title,
+.callout .callout-title-container > *,
+.callout .callout-icon,
+.callout .callout-icon::before {
+  color: #9bb6f5 !important;
+  fill: #9bb6f5 !important;
+}
+
+/* Narrow the pointers figure caption so it doesn't run edge-to-edge */
+#fig-pointers .quarto-float-caption {
+  max-width: 85%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Restyle code snippets: no background, light gray text, keep default font */
+pre,
+code,
+.sourceCode,
+.sourceCode pre {
+  background: transparent !important;
+  color: #d8d8d8 !important;
+  box-shadow: none !important;
+}
+pre {
+  border: none !important;
+}
+/* Float figures right; allow optional custom width via CSS variable */
+.wrap-right {
+  float: right;
+  /* default width if no override is provided */
+  width: var(--wrap-width, 45%);
+  margin: 0 0 1rem 1rem;
+}
+
+.wrap-right img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.wrap-right figcaption {
+  clear: both;
+  display: block;
+  width: 100%;
+  margin-top: 0.35rem;
+  text-align: center;
+  font-size: 0.9em;
+}
+
+/* Keep tip callouts from flowing up alongside wrapped figures */
+.callout-tip {
+  clear: both;
+}
+
+details,
+details p,
+details li {
+  color: #102a56;
+}
+
+details summary {
+  color: #081c3a;
+  font-weight: 700;
+}
+
+details summary::marker {
+  color: #081c3a;
+}
+
+details pre,
+details .sourceCode,
+details code:not(pre code) {
+  background: #686dc3 !important;
+  color: #0b0b0b !important;
+}
+
+details pre,
+details .sourceCode {
+  border: 1px solid rgba(8, 28, 58, 0.28);
+  border-radius: 0.4rem;
+  padding: 0.75rem;
+}
+
+details pre code,
+details .sourceCode code {
+  color: #050505 !important;
+}
+
+details .sourceCode span {
+  color: #050505 !important;
+}
+
+details .sourceCode .kw,
+details .sourceCode .cf,
+details .sourceCode .fu {
+  color: #8b1e2d !important;
+}
+
+details .sourceCode .st,
+details .sourceCode .vs,
+details .sourceCode .ss {
+  color: #7fdf63 !important;
+}
+
+details .sourceCode .va,
+details .sourceCode .dv,
+details .sourceCode .fl,
+details .sourceCode .bn {
+  color: #050505 !important;
+}
+
+details .sourceCode .co {
+  color: #4fa946 !important;
+}
+
+details .sourceCode .op,
+details .sourceCode .pp,
+details .sourceCode .ot,
+details .sourceCode .ch,
+details .sourceCode .sc {
+  color: #050505 !important;
+  font-weight: 700;
+}
+
+.nowrap,
+code.nowrap,
+.nowrap code {
+  white-space: nowrap !important;
+  overflow-wrap: normal !important;
+  word-wrap: normal !important;
+  word-break: normal !important;
+}
+
+.terminal-cheatsheet-table table {
+  border-collapse: collapse;
+}
+
+.terminal-cheatsheet-table th,
+.terminal-cheatsheet-table td {
+  border-left: 1px solid #666;
+  border-right: 1px solid #666;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
