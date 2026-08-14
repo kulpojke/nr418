@@ -1,14 +1,14 @@
 # Hexgrids
 
-## Review of projections and grids
+## Review of projections and grids {style="font-size:0.7em"}
 
 Slides here with terms, then fadein out to explanation, so students can try to explain first
 
-## Projections are not perfect
+## Projections are not perfect {style="font-size:0.7em"}
 
 + distortions
 
-## Square grids
+## Square grids {style="font-size:0.7em"}
 
 + Conceptually simple
 
@@ -18,7 +18,7 @@ Slides here with terms, then fadein out to explanation, so students can try to e
     + Edge and node neighbors are different distances from the focal cell's center
     + Analyses must therefore distinguish between edge-only (rook) and edge-plus-node (bishop) neighborhoods
 
-## Icosahedron-based map projections
+## Icosahedron-based map projections {style="font-size:0.7em"}
 
 ```{=html}
 <div style="text-align: center;">
