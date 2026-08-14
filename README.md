@@ -1,0 +1,1 @@
+[Slides](https://kulpojke.github.io/nr418/#/2/4)
