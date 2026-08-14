@@ -1,0 +1,29 @@
+project:
+  type: website
+  output-dir: ../docs
+  render:
+    - annotations_lecture.qmd
+    - index.qmd
+
+  resources:
+    - ../projects
+    - style
+
+resource-path:
+  - .
+  - ..
+
+format:
+  revealjs:
+    theme: dracula
+    slide-number: true
+    controls: true
+    progress: true
+    hash: true
+    center: true
+    transition: slide
+    background-transition: fade
+    code-block-height: 500px
+
+editor:
+  render-on-save: true

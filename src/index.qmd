@@ -1,0 +1,61 @@
+---
+title: "NR 418"
+format:
+  revealjs:
+    incremental: false
+jupyter: python3
+echo: true
+output-location: column
+navigation-mode: vertical
+---
+
+```{=html}
+<style>
+.reveal .attribution {
+  font-size: 0.4em !important;
+  color: #888;
+  text-align: right;
+  margin-top: -0.5em;
+  margin-bottom: 1em;
+  font-style: italic;
+}
+
+.reveal .attribution a {
+  color: #666;
+  text-decoration: none;
+}
+
+.reveal .attribution a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive image sizing */
+.reveal img {
+  max-width: 95%;
+  max-height: 70vh;
+  height: auto;
+  object-fit: contain;
+}
+</style>
+```
+
+# NR 418
+
+::: {style="font-size:0.7em"}
+[Use arrows or menu in bottom left corner to navigate amongst slides.]{style="font-size:0.6em"}
+
+::: {.columns}
+::: {.column width="50%"}
+__Course Materials__  
+[Annotations lecture](annotations_lecture.html){style="font-size:0.8em"}
+:::
+
+::: {.column width="50%"}
+__Projects__  
+[Annotations](projects/annotations.qmd){style="font-size:0.8em"}
+:::
+:::
+
+:::
+
+{{< include annotations_lecture.qmd >}}
