@@ -26,10 +26,37 @@ Slides here with terms, then fadein out to explanation, so students can try to e
 ::: { .r-stack}
 
 ::: {.fragment .absolute .fade-out data-fragment-index="1"}
+
++ What the dang is an icosahedron?
+
+:::
+
+::: {.fragment .absolute .fade-in-then-out data-fragment-index="1"}
+
++ What the dang is an icosahedron?
+  + a twenty-sided platonic solid (duh)!
+
+:::
+
+
+::: {.fragment .absolute .fade-in-then-out data-fragment-index="2"}
+
++ What is a platonic solid?
+
+:::
+
+::: {.fragment .absolute .fade-in-then-out data-fragment-index="3"}
+
++ What is a platonic solid?
+  + merely a convex, regular polyhedron in three-dimensional Euclidean space
+
+:::
+
+::: {.fragment .absolute .fade-in-then-out data-fragment-index="4"}
 ![](img/icosohedral.png)
 :::
 
-::: {.fragment .absolute .fade-in-then-out data-fragment-index="1"} 
+::: {.fragment .absolute .fade-in-then-out data-fragment-index="5"} 
 
 ```{=html}
 <div style="text-align: center;">
@@ -83,4 +110,4 @@ Animation by [Annaaurora](https://commons.wikimedia.org/wiki/User:Annaaurora), b
 :::
 
 
-##
+## 
