@@ -1,6 +1,6 @@
 # Hexgrids
 
-![](img/hexgrids.png)
+![](../img/hexgrids.png)
 
 ## Review of projections and grids {style="font-size:0.7em"}
 
@@ -26,7 +26,7 @@ Slides here with terms, then fadein out to explanation, so students can try to e
 ::: { .r-stack}
 
 ::: {.fragment .absolute .fade-out data-fragment-index="1"}
-![](img/icosohedral.png)
+![](../img/icosohedral.png)
 :::
 
 ::: {.fragment .absolute .fade-in-then-out data-fragment-index="1"} 
@@ -46,26 +46,29 @@ window.addEventListener("load", function () {
 
   if (!video || typeof Reveal === "undefined") return;
 
-  Reveal.on("fragmentshown", function (event) {
-    if (event.fragment.contains(video)) {
-      video.currentTime = 0;
-      video.play().catch(function () {});
-    }
-  });
+  const fragment = video.closest(".fragment");
 
-  Reveal.on("fragmenthidden", function (event) {
-    if (event.fragment.contains(video)) {
+  function syncPlayback() {
+    const currentSlide = Reveal.getCurrentSlide();
+    const isVisible = fragment.classList.contains("visible");
+    const isOnCurrentSlide = currentSlide && currentSlide.contains(video);
+
+    if (isVisible && isOnCurrentSlide) {
+      if (video.paused) {
+        video.currentTime = 0;
+        video.play().catch(function () {});
+      }
+    } else {
       video.pause();
       video.currentTime = 0;
     }
-  });
+  }
 
-  Reveal.on("slidechanged", function (event) {
-    if (!event.currentSlide.contains(video)) {
-      video.pause();
-      video.currentTime = 0;
-    }
-  });
+  const observer = new MutationObserver(syncPlayback);
+  observer.observe(fragment, { attributes: true, attributeFilter: ["class"] });
+
+  Reveal.on("slidechanged", syncPlayback);
+  syncPlayback();
 });
 </script>
 ```
