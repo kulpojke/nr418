@@ -47,7 +47,7 @@ navigation-mode: vertical
 ::: {.columns}
 ::: {.column width="50%"}
 __Course Materials__  
-[Annotations lecture](annotations_lecture.html){style="font-size:0.8em"}
+x
 :::
 
 ::: {.column width="50%"}
@@ -58,4 +58,4 @@ __Projects__
 
 :::
 
-{{< include hexgrids_lecture.qmd >}}
+{{< include src/hexgrids_lecture.qmd >}}

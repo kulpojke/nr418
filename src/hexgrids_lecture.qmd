@@ -1,6 +1,6 @@
 # Hexgrids
 
-![](../img/hexgrids.png)
+![](img/hexgrids.png)
 
 ## Review of projections and grids {style="font-size:0.7em"}
 
@@ -26,7 +26,7 @@ Slides here with terms, then fadein out to explanation, so students can try to e
 ::: { .r-stack}
 
 ::: {.fragment .absolute .fade-out data-fragment-index="1"}
-![](../img/icosohedral.png)
+![](img/icosohedral.png)
 :::
 
 ::: {.fragment .absolute .fade-in-then-out data-fragment-index="1"} 

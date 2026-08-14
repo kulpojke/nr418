@@ -1,17 +1,17 @@
 project:
   type: website
-  output-dir: ../docs
+  output-dir: docs
   render:
-    - annotations_lecture.qmd
     - index.qmd
 
   resources:
-    - ../projects
-    - style
+    - projects
+    - img
+    - src/style
 
 resource-path:
   - .
-  - ..
+  - src
 
 format:
   revealjs:
