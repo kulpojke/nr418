@@ -178,13 +178,14 @@ x</p>
 </section>
 
 <section>
-<section id="hexgrids" class="title-slide slide level1 center">
-<h1>Hexgrids</h1>
+<section id="hexgrids-specifically-h3" class="title-slide slide level1 center">
+<h1>Hexgrids, specifically H3</h1>
 
 <img data-src="../img/hexgrids.png" class="r-stretch"></section>
 <section id="review-of-projections-and-grids" class="slide level2 center" style="font-size:0.7em">
 <h2>Review of projections and grids</h2>
 <p>Slides here with terms, then fadein out to explanation, so students can try to explain first</p>
+<p>gnomonic projection - project globe onto a developable surface as though a light were shining from the center of the earth</p>
 </section>
 <section id="projections-are-not-perfect" class="slide level2 center" style="font-size:0.7em">
 <h2>Projections are not perfect</h2>
@@ -236,6 +237,9 @@ x</p>
 </div>
 <div class="fragment absolute fade-in-then-out" data-fragment-index="4" style="">
 <p><img data-src="img/icosohedral.png"></p>
+<div class="attribution">
+<p>image: <a href="https://www.uber.com/us/en/blog/h3/">Isaac Brodsky</a></p>
+</div>
 </div>
 <div class="fragment absolute fade-in-then-out" data-fragment-index="5" style="">
 <div style="text-align: center;">
@@ -279,10 +283,65 @@ window.addEventListener("load", function () {
 <p>Animation by <a href="https://commons.wikimedia.org/wiki/User:Annaaurora">Annaaurora</a>, based on Chris Rywalt’s <em>Dymaxion Projection Animation</em> and NASA’s <em>Blue Marble: Next Generation</em> imagery. <a href="https://commons.wikimedia.org/wiki/File:Dymaxion_2003_animation_remastered.webm">Wikimedia Commons</a>, <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0 1.0</a>.</p>
 </div>
 </div>
+<div class="fragment absolute fade-in-then-out" data-fragment-index="6" style="">
+<p><strong>A gnomonic icosahedral projection is neither equal-area, equidistant, nor conformal</strong>.</p>
+<ul>
+<li>Areas become increasingly exaggerated away from each triangular face’s center.</li>
+<li>Angles and local shapes are not preserved, except approximately near each face’s tangency point.</li>
+<li>Great-circle routes project as straight lines within each face.</li>
+<li>Dividing the globe among 20 faces <em>limits</em> the extent of distortion but does not eliminate it.</li>
+</ul>
+</div>
 </div>
 </section>
-<section id="section" class="slide level2 center">
-<h2></h2>
+<section id="h3" class="slide level2 center" style="font-size:0.7em">
+<h2>H3</h2>
+<ul>
+<li><strong>H3</strong> is an open source Hexagonal Hierarchical Spatial Index that was developed by Uber.</li>
+<li>H3 uses gnomonic icosahedral projection, but…</li>
+<li>it does not unfold the icosohedron to make a map,</li>
+<li>rather it lays a hexagonal grid on the surface of the faces themselves forming a <em>geodesic discrete global grid system</em></li>
+</ul>
+</section>
+<section id="geodesic-discrete-global-grid-system" class="slide level2 center" style="font-size:0.7em">
+<h2>Geodesic Discrete Global Grid System</h2>
+<div class="r-stack">
+<div class="fragment absolute fade-out" data-fragment-index="1" style="">
+<p>What?</p>
+</div>
+<div class="fragment absolute fade-in-then-out" data-fragment-index="1" style="">
+<div class="columns">
+<div class="column" style="width:55%;">
+<ul>
+<li><strong>Geodesic</strong>
+<ul>
+<li>constructed on an approximation of the earth surface, rather than a plane.</li>
+<li>“geodesic” describes its recursively subdivided icosahedral structure resembling the geometry used in Buckminster Fuller’s geodesic domes</li>
+</ul></li>
+</ul>
+</div><div class="column" style="width:45%;">
+<p><img data-src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Biosphere_montreal.JPG/960px-Biosphere_montreal.JPG" style="display: block; max-width: 100%; max-height: 42vh; width: auto; height: auto; margin: 0 auto; object-fit: contain;" alt="The geodesic dome of the Montreal Biosphere"></p>
+<div class="attribution">
+<p>Photo: <a href="https://commons.wikimedia.org/wiki/User:Hienstorfer">Philipp Hienstorfer</a>, via <a href="https://commons.wikimedia.org/wiki/File:Biosphere_montreal.JPG">Wikimedia Commons</a>, <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</p>
+</div>
+</div></div>
+</div>
+<div class="fragment absolute fade-in-then-out" data-fragment-index="2" style="">
+<ul>
+<li><strong>Discrete Global Grid System</strong>
+<ul>
+<li>mosaic that covers the entire Earth’s surface</li>
+</ul></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="why-a-hexagonal-grid" class="slide level2 center">
+<h2>Why a hexagonal grid?</h2>
+
+<img data-src="img/why_hex.png" class="r-stretch"><div class="attribution">
+<p>image: <a href="https://www.uber.com/us/en/blog/h3/">Isaac Brodsky</a></p>
+</div>
 
 
 </section></section>

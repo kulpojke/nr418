@@ -1,10 +1,13 @@
-# Hexgrids
+# Hexgrids, specifically H3
 
 ![](../img/hexgrids.png)
 
 ## Review of projections and grids {style="font-size:0.7em"}
 
 Slides here with terms, then fadein out to explanation, so students can try to explain first
+
+gnomonic projection - project globe onto a developable surface as though a light were shining from the center of the earth
+
 
 ## Projections are not perfect {style="font-size:0.7em"}
 
@@ -54,6 +57,11 @@ Slides here with terms, then fadein out to explanation, so students can try to e
 
 ::: {.fragment .absolute .fade-in-then-out data-fragment-index="4"}
 ![](img/icosohedral.png)
+
+::: {.attribution}
+image: [Isaac Brodsky](https://www.uber.com/us/en/blog/h3/)
+:::
+
 :::
 
 ::: {.fragment .absolute .fade-in-then-out data-fragment-index="5"} 
@@ -104,10 +112,66 @@ window.addEventListener("load", function () {
 Animation by [Annaaurora](https://commons.wikimedia.org/wiki/User:Annaaurora), based on Chris Rywalt's *Dymaxion Projection Animation* and NASA's *Blue Marble: Next Generation* imagery. [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Dymaxion_2003_animation_remastered.webm), [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/).
 :::
 
+:::
+
+::: {.fragment .absolute .fade-in-then-out data-fragment-index="6"}
+
+**A gnomonic icosahedral projection is neither equal-area, equidistant, nor conformal**.
+
+- Areas become increasingly exaggerated away from each triangular face’s center.
+- Angles and local shapes are not preserved, except approximately near each face’s tangency point.
+- Great-circle routes project as straight lines within each face.
+- Dividing the globe among 20 faces _limits_ the extent of distortion but does not eliminate it.
 
 :::
 
 :::
 
+##  H3 {style="font-size:0.7em"}
 
-## 
++ __H3__ is an open source Hexagonal Hierarchical Spatial Index that was developed by Uber.
++ H3 uses gnomonic icosahedral projection, but...
++ it does not unfold the icosohedron to make a map,
++ rather it lays a hexagonal grid on the surface of the faces themselves forming a _geodesic discrete global grid system_
+
+## Geodesic Discrete Global Grid System {style="font-size:0.7em"}
+::: { .r-stack}
+
+::: {.fragment .absolute .fade-out data-fragment-index="1"}
+What?
+:::
+
+::: {.fragment .absolute .fade-in-then-out data-fragment-index="1"}
+::: {.columns}
+::: {.column width="55%"}
++ __Geodesic__ 
+  - constructed on an approximation of the earth surface, rather than a plane.
+  - “geodesic” describes its recursively subdivided icosahedral structure resembling the geometry used in Buckminster Fuller’s geodesic domes
+:::
+
+::: {.column width="45%"}
+![](https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Biosphere_montreal.JPG/960px-Biosphere_montreal.JPG){fig-alt="The geodesic dome of the Montreal Biosphere" style="display: block; max-width: 100%; max-height: 42vh; width: auto; height: auto; margin: 0 auto; object-fit: contain;"}
+
+::: {.attribution}
+Photo: [Philipp Hienstorfer](https://commons.wikimedia.org/wiki/User:Hienstorfer), via [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Biosphere_montreal.JPG), [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
+:::
+:::
+:::
+:::
+
+::: {.fragment .absolute .fade-in-then-out data-fragment-index="2"}
++ __Discrete Global Grid System__ 
+  -  mosaic that covers the entire Earth's surface
+:::
+
+:::
+
+## Why a hexagonal grid?
+
+![](img/why_hex.png)
+
+::: {.attribution}
+image: [Isaac Brodsky](https://www.uber.com/us/en/blog/h3/)
+:::
+
+

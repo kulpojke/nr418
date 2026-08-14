@@ -4,7 +4,7 @@
     "href": "index.html#review-of-projections-and-grids",
     "title": "NR 418",
     "section": "Review of projections and grids",
-    "text": "Review of projections and grids\nSlides here with terms, then fadein out to explanation, so students can try to explain first"
+    "text": "Review of projections and grids\nSlides here with terms, then fadein out to explanation, so students can try to explain first\ngnomonic projection - project globe onto a developable surface as though a light were shining from the center of the earth"
   },
   {
     "objectID": "index.html#projections-are-not-perfect",
@@ -25,6 +25,27 @@
     "href": "index.html#icosahedron-based-map-projections",
     "title": "NR 418",
     "section": "Icosahedron-based map projections",
-    "text": "Icosahedron-based map projections\n\n\n\nWhat the dang is an icosahedron?\n\n\n\n\nWhat the dang is an icosahedron?\n\na twenty-sided platonic solid (duh)!\n\n\n\n\n\nWhat is a platonic solid?\n\n\n\n\nWhat is a platonic solid?\n\nmerely a convex, regular polyhedron in three-dimensional Euclidean space\n\n\n\n\n\n\n\n\n  \n    \n    Your browser does not support embedded WebM video.\n  \n\n\n\nAnimation by Annaaurora, based on Chris Rywalt’s Dymaxion Projection Animation and NASA’s Blue Marble: Next Generation imagery. Wikimedia Commons, CC0 1.0."
+    "text": "Icosahedron-based map projections\n\n\n\nWhat the dang is an icosahedron?\n\n\n\n\nWhat the dang is an icosahedron?\n\na twenty-sided platonic solid (duh)!\n\n\n\n\n\nWhat is a platonic solid?\n\n\n\n\nWhat is a platonic solid?\n\nmerely a convex, regular polyhedron in three-dimensional Euclidean space\n\n\n\n\n\n\nimage: Isaac Brodsky\n\n\n\n\n  \n    \n    Your browser does not support embedded WebM video.\n  \n\n\n\nAnimation by Annaaurora, based on Chris Rywalt’s Dymaxion Projection Animation and NASA’s Blue Marble: Next Generation imagery. Wikimedia Commons, CC0 1.0.\n\n\n\nA gnomonic icosahedral projection is neither equal-area, equidistant, nor conformal.\n\nAreas become increasingly exaggerated away from each triangular face’s center.\nAngles and local shapes are not preserved, except approximately near each face’s tangency point.\nGreat-circle routes project as straight lines within each face.\nDividing the globe among 20 faces limits the extent of distortion but does not eliminate it."
+  },
+  {
+    "objectID": "index.html#h3",
+    "href": "index.html#h3",
+    "title": "NR 418",
+    "section": "H3",
+    "text": "H3\n\nH3 is an open source Hexagonal Hierarchical Spatial Index that was developed by Uber.\nH3 uses gnomonic icosahedral projection, but…\nit does not unfold the icosohedron to make a map,\nrather it lays a hexagonal grid on the surface of the faces themselves forming a geodesic discrete global grid system"
+  },
+  {
+    "objectID": "index.html#geodesic-discrete-global-grid-system",
+    "href": "index.html#geodesic-discrete-global-grid-system",
+    "title": "NR 418",
+    "section": "Geodesic Discrete Global Grid System",
+    "text": "Geodesic Discrete Global Grid System\n\n\nWhat?\n\n\n\n\n\nGeodesic\n\nconstructed on an approximation of the earth surface, rather than a plane.\n“geodesic” describes its recursively subdivided icosahedral structure resembling the geometry used in Buckminster Fuller’s geodesic domes\n\n\n\n\n\nPhoto: Philipp Hienstorfer, via Wikimedia Commons, CC BY-SA 4.0.\n\n\n\n\n\nDiscrete Global Grid System\n\nmosaic that covers the entire Earth’s surface"
+  },
+  {
+    "objectID": "index.html#why-a-hexagonal-grid",
+    "href": "index.html#why-a-hexagonal-grid",
+    "title": "NR 418",
+    "section": "Why a hexagonal grid?",
+    "text": "Why a hexagonal grid?\n\n\nimage: Isaac Brodsky"
   }
 ]
