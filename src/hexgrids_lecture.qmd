@@ -34,3 +34,6 @@ Slides here with terms, then fadein out to explanation, so students can try to e
 ::: {.attribution}
 Animation by [Annaaurora](https://commons.wikimedia.org/wiki/User:Annaaurora), based on Chris Rywalt's *Dymaxion Projection Animation* and NASA's *Blue Marble: Next Generation* imagery. [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Dymaxion_2003_animation_remastered.webm), [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/).
 :::
+
+
+##
