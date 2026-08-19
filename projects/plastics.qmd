@@ -1,0 +1,7 @@
+#
+
+Apparent Visible Wavelength
+
+$$
+AVW = \frac{\sum_{i=\lambda_1}^{\lambda_{n}} R_{rs} (\lambda_{i})}{1}
+$$

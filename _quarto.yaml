@@ -3,6 +3,8 @@ project:
   output-dir: docs
   render:
     - index.qmd
+    - projects/annotations.qmd
+    - projects/palstics.qmd
 
   resources:
     - projects
