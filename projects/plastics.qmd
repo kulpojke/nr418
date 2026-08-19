@@ -1,7 +1,19 @@
 #
 
+## Workflow
+
++ Black plastic separated using SWIR-2
++ Bare soil pixels separated using spectral slope from 800 – 1600 nm
++ White plastics distinguished using AVW
+
+
+##
+
 Apparent Visible Wavelength
 
 $$
-AVW = \frac{\sum_{i=\lambda_1}^{\lambda_{n}} R_{rs} (\lambda_{i})}{1}
+AVW = \frac{\sum_{i=\lambda_1}^{\lambda_{n}} R_{rs} (\lambda_{i})}{\sum_{i=\lambda_1}^{\lambda_{n}} \frac{R_{rs} (\lambda_{i})}{\lambda_{i}}}
 $$
+
++ AVW reduces the entire spectrum to a one-dimensional metric of color that is correlated to spectral shape
++ In this paper AVW is applied across visible and SWIR

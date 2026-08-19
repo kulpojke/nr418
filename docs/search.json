@@ -1,5 +1,19 @@
 [
   {
+    "objectID": "projects/plastics.html#workflow",
+    "href": "projects/plastics.html#workflow",
+    "title": "",
+    "section": "Workflow",
+    "text": "Workflow\n\nBlack plastic separated using SWIR-2\nBare soil pixels separated using spectral slope from 800 – 1600 nm\nWhite plastics distinguished using AVW"
+  },
+  {
+    "objectID": "projects/plastics.html#section-1",
+    "href": "projects/plastics.html#section-1",
+    "title": "",
+    "section": "",
+    "text": "Apparent Visible Wavelength\n\\[\nAVW = \\frac{\\sum_{i=\\lambda_1}^{\\lambda_{n}} R_{rs} (\\lambda_{i})}{\\sum_{i=\\lambda_1}^{\\lambda_{n}} \\frac{R_{rs} (\\lambda_{i})}{\\lambda_{i}}}\n\\]\n\nAVW reduces the entire spectrum to a one-dimensional metric of color that is correlated to spectral shape\nIn this paper AVW is applied across visible and SWIR"
+  },
+  {
     "objectID": "index.html#review-of-projections-and-grids",
     "href": "index.html#review-of-projections-and-grids",
     "title": "NR 418",
@@ -47,5 +61,75 @@
     "title": "NR 418",
     "section": "Why a hexagonal grid?",
     "text": "Why a hexagonal grid?\n\n\nimage: Isaac Brodsky"
+  },
+  {
+    "objectID": "projects/annotations.html#project-concept",
+    "href": "projects/annotations.html#project-concept",
+    "title": "",
+    "section": "Project concept",
+    "text": "Project concept\nBuild a reproducible workflow that divides a disaster-affected area into H3 cells and lets people manually classify Overture building footprints using pre-event and post-event imagery.\nH3 should be used to partition, assign, and track work. The annotation unit should remain the individual Overture building, identified by its Overture/GERS ID.\nArea of interest\n  -&gt; extract Overture buildings\n  -&gt; assign each building to one H3 task cell\n  -&gt; annotator claims a cell\n  -&gt; inspect before/after imagery\n  -&gt; label each building\n  -&gt; review and export the results\nThis is feasible for an advanced class if the first version is limited to one event, one metropolitan-scale area, and imagery selected in advance. A general global platform would be a substantially larger project."
+  },
+  {
+    "objectID": "projects/annotations.html#core-workflow",
+    "href": "projects/annotations.html#core-workflow",
+    "title": "",
+    "section": "Core workflow",
+    "text": "Core workflow\n\nSelect an event, area of interest, and observation period.\nExtract building polygons from a pinned Overture release.\nAssign each building to exactly one H3 cell using a point guaranteed to lie inside its footprint. Do not assign a building to every cell its polygon touches.\nCount buildings per cell and select a resolution that produces manageable tasks.\nPresent one claimed H3 cell, its buildings, and pre/post imagery to an annotator.\nSave each decision immediately and track task progress.\nHave multiple people annotate a subset of cells for quality assessment and adjudication.\nExport the annotations with enough provenance to reproduce and interpret them.\n\nH3 resolutions 9 or 10 are reasonable starting points, but the final resolution should be chosen using the number of buildings per task rather than area alone. Resolution 9 averages about 0.105 km² per hexagon and resolution 10 about 0.015 km², although actual cell areas vary. See the H3 resolution statistics.\nWhen a building crosses a hexagon boundary, assign it using a representative interior point but display a buffer around the active cell so the annotator retains visual context."
+  },
+  {
+    "objectID": "projects/annotations.html#annotation-interface",
+    "href": "projects/annotations.html#annotation-interface",
+    "title": "",
+    "section": "Annotation interface",
+    "text": "Annotation interface\nThe minimum useful interface should provide:\n\nA queue of available H3 cells.\nA way to claim, release, skip, and complete a cell.\nAutomatic zoom to the selected cell.\nSynchronized pre-event and post-event imagery, preferably with a swipe or side-by-side control.\nClickable Overture footprints over the imagery.\nKeyboard shortcuts for rapid classification.\nA visible completed/remaining building count.\nUndo and autosave.\nAn export mechanism and an administrative progress view.\n\nUse more than a forced binary classification:\n\ndestroyed\nnot_destroyed\nuncertain\nnot_visible\nfootprint_mismatch\n\nAn optional damage-level field could be added later, but only after students establish a clear interpretation guide with image examples.\nEach annotation should record at least:\nbuilding_id\noverture_release\nh3_cell\nlabel\nconfidence\nannotator_id\nimagery_source\npre_image_date\npost_image_date\nannotation_timestamp\nnotes\nLabels should be described as observations made from specified imagery, not as authoritative structural-safety assessments."
+  },
+  {
+    "objectID": "projects/annotations.html#possible-implementations",
+    "href": "projects/annotations.html#possible-implementations",
+    "title": "",
+    "section": "Possible implementations",
+    "text": "Possible implementations\nStandalone multi-user web application\nThis is the strongest option if the goal is a tool that many people can use to annotate large numbers of buildings.\n\nPreprocessing: Python, DuckDB Spatial, h3-py, and GeoPandas as needed.\nFrontend: MapLibre GL JS for raster imagery and interactive building layers.\nBackend: FastAPI with PostgreSQL/PostGIS, or a managed PostgreSQL service such as Supabase.\nImagery: existing XYZ/WMTS services or TiTiler for Cloud-Optimized GeoTIFFs.\nDeployment: Docker Compose locally, followed by a small hosted deployment.\n\nThis approach supports authentication, cell locking, simultaneous annotators, immediate writes, QA assignments, and progress dashboards. It also requires the most software-engineering work. MapLibre supports raster tile sources and interactive vector layers, while TiTiler can expose COG imagery as web map tiles.\nQGIS workflow\nQGIS is the fastest path to a working prototype and may be preferable if the learning goal is GIS workflow design rather than web development.\n\nPrepare a QGIS project containing imagery, H3 cells, and Overture buildings.\nStore annotations in a GeoPackage with constrained fields and a customized attribute form.\nFilter buildings by the active H3 ID or create one project/package per task bundle.\nUse categorized symbology so completed labels are immediately visible.\nMerge student GeoPackages at the end, or use PostGIS if concurrent editing is required.\n\nAdvantages are rapid development, strong raster support, offline operation, and familiar editing tools. Weaknesses are distributing updates, preventing duplicate work, merging files, and supporting many simultaneous annotators. A shared PostGIS database can address concurrency but adds administration and makes the workflow less portable.\nGoogle Earth Engine application\nEarth Engine is attractive when appropriate pre/post imagery is already in its catalog or has been uploaded as assets.\n\nUpload the AOI, H3 IDs, and an extracted Overture building subset as a table asset/FeatureCollection.\nBuild a JavaScript Earth Engine App with before/after maps and label buttons.\nUse Earth Engine’s UI widgets to navigate cells and switch imagery.\nExport completed annotations or send decisions to a separate external database/API.\n\nEarth Engine Apps are easy to share and can be used without requiring every viewer to have an Earth Engine account. Earth Engine also provides map, button, panel, and drawing widgets through its UI API. Its main limitation for this project is persistent collaborative write-back: a separate backend is likely necessary for reliable multi-user task claiming and annotation storage. Large building collections should be uploaded as table assets rather than embedded directly in a script.\nStandalone notebook\nA Jupyter notebook is a good teaching prototype or single-annotator tool.\n\nQuery an AOI from Overture with DuckDB or the Overture client.\nCompute a representative point and H3 ID for each building.\nDisplay imagery and polygons using ipyleaflet, leafmap, or another interactive map widget.\nUse ipywidgets buttons and keyboard controls to assign labels.\nSave after every decision to SQLite, GeoPackage, or Parquet.\n\nThis implementation keeps the data pipeline visible and is straightforward to distribute as a reproducible environment. It is less suitable for many annotators because notebooks do not naturally provide task locking, authentication, centralized persistence, or robust deployment. It is an excellent first milestone before moving the same data model into a web application."
+  },
+  {
+    "objectID": "projects/annotations.html#imagery-requirements-and-risks",
+    "href": "projects/annotations.html#imagery-requirements-and-risks",
+    "title": "",
+    "section": "Imagery requirements and risks",
+    "text": "Imagery requirements and risks\nImagery is likely to be harder than either H3 indexing or Overture extraction.\n\nBuilding-level assessment generally requires high-resolution aerial or satellite imagery; Sentinel-2 is usually too coarse for individual buildings.\nPre/post images must have documented acquisition dates and reasonable co-registration.\nClouds, smoke, shadows, seasonal differences, and oblique views need explicit handling.\nOverture polygons may be stale, missing, duplicated, or offset from the imagery.\nImagery licensing must permit classroom display and the intended distribution of derived annotations.\n\nFor the first course offering, provide a prepared imagery catalog rather than requiring the tool to discover suitable imagery for arbitrary events. If imagery is delivered as COGs, a tile service can provide browser-friendly access without first creating a large static tile pyramid."
+  },
+  {
+    "objectID": "projects/annotations.html#quality-assurance",
+    "href": "projects/annotations.html#quality-assurance",
+    "title": "",
+    "section": "Quality assurance",
+    "text": "Quality assurance\n\nWrite a concise labeling manual with positive, negative, uncertain, obscured, and footprint-error examples.\nRun a small pilot before opening the full AOI.\nDouble-annotate a sample of tasks and calculate inter-annotator agreement.\nInclude an adjudication workflow for disagreements.\nTrack skipped cells and missing imagery rather than treating them as complete.\nPreserve original judgments as well as adjudicated labels.\nTest performance in dense and sparse neighborhoods before fixing the H3 resolution."
+  },
+  {
+    "objectID": "projects/annotations.html#licensing-and-reproducibility",
+    "href": "projects/annotations.html#licensing-and-reproducibility",
+    "title": "",
+    "section": "Licensing and reproducibility",
+    "text": "Licensing and reproducibility\nRecord the exact Overture release because its data and schema change over time. Overture building data is distributed under ODbL and includes source-specific attribution requirements; consult the Overture buildings guide and attribution guidance before publishing a combined dataset.\nThe project should also record imagery providers, licenses, acquisition dates, processing steps, software versions, H3 resolution, AOI geometry, and label-schema version."
+  },
+  {
+    "objectID": "projects/annotations.html#suggested-team-responsibilities",
+    "href": "projects/annotations.html#suggested-team-responsibilities",
+    "title": "",
+    "section": "Suggested team responsibilities",
+    "text": "Suggested team responsibilities\n\nData pipeline: Overture extraction, validation, H3 assignment, and task generation.\nImagery: catalog preparation, tiling, dates, alignment, and attribution.\nInterface and database: map interaction, labels, task claiming, persistence, and export.\nQA and deployment: annotation guide, testing, adjudication, documentation, and hosting."
+  },
+  {
+    "objectID": "projects/annotations.html#instructor-readiness-checklist",
+    "href": "projects/annotations.html#instructor-readiness-checklist",
+    "title": "",
+    "section": "Instructor readiness checklist",
+    "text": "Instructor readiness checklist\nScope and learning goals\n\nSelect one disaster event and a bounded pilot AOI.\nDecide whether the primary learning goal is GIS workflow design, Earth Engine, notebooks, or full-stack web development.\nDefine the expected deliverable: prototype, deployable application, or completed annotation campaign.\nSet a target number of buildings, annotators, and weeks.\nDecide whether students work as one team or as subsystem teams.\n\nBuilding and H3 data\n\nSelect and record a specific Overture release.\nPrepare or test the Overture extraction query for the AOI.\nInspect footprint coverage, alignment, duplicates, and obvious omissions.\nChoose a provisional H3 resolution and calculate buildings per cell.\nDecide how buildings crossing cells will receive a unique task assignment.\nPrepare a small development subset that students can load quickly.\n\nImagery\n\nObtain suitable pre-event and post-event imagery.\nConfirm that its resolution is adequate for building-level interpretation.\nRecord provider, license, acquisition date, CRS, resolution, and processing history.\nVerify pre/post alignment against building footprints.\nDecide how imagery will be delivered: XYZ/WMTS, Earth Engine asset, COG/TiTiler, or local raster.\nPrepare fallback cells for clouds, missing coverage, or poor-quality imagery.\nConfirm that students and eventual annotators are allowed to view the imagery.\n\nAnnotation protocol\n\nFinalize label definitions and exclusions.\nInclude uncertain, not_visible, and footprint_mismatch outcomes.\nPrepare example images for every label.\nDecide whether confidence and notes are required.\nDefine when a cell is considered complete.\nDefine the double-annotation and adjudication procedure.\nClarify that labels are imagery interpretations, not structural-safety declarations.\n\nTechnical preparation\n\nChoose the implementation path and provide a starter repository.\nProvide a reproducible environment or dependency file.\nProvide the annotation table/schema and a small example dataset.\nArrange required accounts, cloud projects, database credentials, and quotas.\nDecide where annotation results will be backed up.\nTest autosave, recovery, export, and concurrent editing where applicable.\nProvide deployment instructions and an instructor-controlled fallback deployment.\n\nLegal, ethical, and operational preparation\n\nReview Overture’s ODbL and attribution requirements.\nReview imagery licensing and attribution requirements.\nDecide how annotator identities will be represented and protected.\nEstablish a data-retention and backup plan.\nDocument limitations, uncertainty, and intended uses of the final dataset.\nIdentify who will maintain the tool and data after the course ends."
+  },
+  {
+    "objectID": "projects/annotations.html#recommended-first-milestone",
+    "href": "projects/annotations.html#recommended-first-milestone",
+    "title": "",
+    "section": "Recommended first milestone",
+    "text": "Recommended first milestone\nBefore building a multi-user application, require each team to demonstrate this complete vertical slice:\n\nExtract approximately 500–2,000 Overture buildings from a pilot AOI.\nAssign them uniquely to H3 cells.\nLoad one pair of pre/post images.\nNavigate to a selected H3 cell.\nLabel and persist at least 25 buildings.\nExport records containing full building, imagery, task, and annotation provenance.\n\nOnce that works reliably, students can add collaboration, task locking, QA, dashboards, and broader imagery support."
   }
 ]
