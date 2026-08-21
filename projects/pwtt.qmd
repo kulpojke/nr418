@@ -12,19 +12,15 @@ resources:
 
 # Repurposing the Pixel Wise T-Test for Wildfire Damage Detection
 
-**NOTE: This project uses Google Earth Engine.  You will have to code.  It is a great opportunity to lear to code, as most of the code is already provided, and you just need to modify it.  Some experience with Python would be helpful.**
+**NOTE: This project uses Google Earth Engine.  You will have to code.  It is a great opportunity to learn to code, as most of the code is already provided. You will just need to modify it.  Some experience with Python would be helpful, but i guess you can like, _learn by doing!_, or whatever. I will provide a fair amount of guidance on theis if needed. It is possible that if done well this could be turned into a publication**
 
 ## Project Summary
 
 The purpose of this project is to determine whether the Pixel-Wise T-Test (PWTT), originally developed by Ollie Ballinger, for damage detection in war zones, can be adapted to post-fire structure-damage screening in the wildland-urban interface.
 
-This project will use Google Earth Engine.  This is the most practical way to avoid building a local Sentinel-1 processing pipeline, which is beyond what is reasonable to expect in this course. This is being carried out, not to prove that radar can replace visual interpretation, but rather to test whether this simple and easily reproducible change statistic can help identify buildings or neighborhoods that should receive closer review after a wildfire.
-
-The study question is:
-
-> Can PWTT identify burned or destroyed structures in a context where they are surrounded by other abrupt post-fire changes, e.g. burned vegetation? 
-
 PWTT detects abrupt changes in Synthetic Aperture Radar (SAR) backscatter from the Sentinel-1 satellites. It does not directly see damage. In urban warfare, abrupt SAR change near buildings is often a reasonable proxy for structural destruction. In WUI fires, the interpretation is less direct because houses, trees, shrubs, vehicles, fences, and bare ground are often mixed inside the same 10 m Sentinel-1 pixels.
+
+This project will use Google Earth Engine.  This is the most practical way to avoid building a local Sentinel-1 processing pipeline, which is beyond what is reasonable to expect in this course. This is being carried out, not necessarily to prove that radar can replace visual interpretation, or deep learning algorithms, but rather to test whether this simple and easily reproducible change statistic can help identify buildings or neighborhoods that should receive closer review after a wildfire.
 
 This makes the wildfire application interesting because:
 
@@ -33,6 +29,11 @@ This makes the wildfire application interesting because:
 - Small homes may occupy less than one Sentinel-1 pixel.
 - Tree canopy can obscure or dominate the radar response.
 - Suppression activity, debris removal, wet soil, and post-fire cleanup can also change backscatter.
+
+The study question is:
+
+> Can the Pixel-Wise T-Test identify burned or destroyed structures in a context where they are surrounded by other abrupt post-fire changes, e.g. burned vegetation? 
+
 
 
 ## Learning Goals
@@ -59,24 +60,24 @@ Use the PWTT repository as a starting point.
 
 ## Recommended Study Design
 
-Select one to five wildfires and corresponding AOIs in WUI areas with known structure damage. Good candidates are events with public structure-damage maps, or well-documented post-fire imagery that you can annotate.  I can give you some pointers on this.
+Select three to five wildfires and corresponding AOIs in WUI areas with known structure damage. Good candidates are events with public structure-damage maps, or well-documented post-fire imagery that you can annotate.  I will help this.
 
 Minimum scope:
 
-- One wildfire.
-- One community or bounded WUI AOI.
+- three wildfires.
+- Three communities or bounded WUI AOIs.
 - Approximately 500-5,000 building footprints.
 - One reference label set for validation.
 
-The event should have enough damaged and undamaged buildings to make [precision and recall](https://en.wikipedia.org/wiki/Precision_and_recall) meaningful. Avoid an AOI where nearly every building burned or where almost no buildings burned (A ~ 50/50 split would be ideal).
+The event should have enough damaged and undamaged buildings to make [precision and recall](https://en.wikipedia.org/wiki/Precision_and_recall) meaningful. Avoid  AOIs where nearly every building burned or where almost no buildings burned (A ~ 50/50 split would be ideal).
 
-You can use the code from the GitHub repo as a starting point. Make reasonable changes such as renameing variables in your notebook or comments so the workflow refers to fire dates rather than war dates. The underlying PWTT function uses conflict-oriented parameter names, but the statistical operation is simply pre-event versus post-event change detection.
+You can use the code from the GitHub repo as a starting point. Make reasonable changes such as renaming variables in your notebook or comments so the workflow refers to fire dates rather than war dates. 
 
-### Stratification
+### Stratification of Data
 
-Stratification should be based on **pre-fire vegetation and land-cover context**, not on the PWTT output itself. The goal is to ask where PWTT works well or fails and why. For example, are false positives concentrated around intact houses with burned vegetation nearby.
+Stratification should be based on pre-fire vegetation and land-cover context, not on the PWTT output itself. The goal is to ask where PWTT works well or fails and why. For example, are false positives concentrated around intact houses with burned vegetation nearby.
 
-Create one analysis table with one row per building. Before running the final accuracy assessment, attach context variables to each building footprint:
+Create one table with one row per building (buildings from all fires/AOIs are pooled here). Before running the final accuracy assessment, attach context variables to each building footprint:
 
 ```text
 building_id
@@ -94,11 +95,11 @@ prediction
 Determine vegetation characteristics within rings around each (labeled) building. You can decide on the ring size. Some suggestions to consider:
 
 - Building footprint: likely structure signal.
-- 0-10 m ring: immediate defensible-space context.
+- 0-10 m ring: immediate defensible-space context (and ~ pixel size).
 - 10-30 m ring: near-structure vegetation and parcel fuels.
 - 30-100 m ring: neighborhood fuel context.
 
-Then divide buildings into a small number of pre-fire context classes. Keep the categories simple enough that each group still has enough damaged and undamaged buildings for evaluation, e.g.:
+Then divide buildings into a small number of pre-fire context classes (and join to table discussed above). Keep the categories simple enough that each group still has enough damaged and undamaged buildings for evaluation, e.g.:
 
 ```text
 low vegetation near building

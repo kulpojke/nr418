@@ -3,6 +3,7 @@ project:
   output-dir: docs
   render:
     - index.qmd
+    - syllibi/syllabus_fall_2026.qmd
     - projects/annotations.qmd
     - projects/plastics.qmd
     - projects/pwtt.qmd

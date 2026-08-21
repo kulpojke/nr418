@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>pwtt</title>
+<title>syllabus_fall_2026</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -84,268 +84,130 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<section id="repurposing-the-pixel-wise-t-test-for-wildfire-damage-detection" class="level1">
-<h1>Repurposing the Pixel Wise T-Test for Wildfire Damage Detection</h1>
-<p><strong>NOTE: This project uses Google Earth Engine. You will have to code. It is a great opportunity to learn to code, as most of the code is already provided. You will just need to modify it. Some experience with Python would be helpful, but i guess you can like, <em>learn by doing!</em>, or whatever. I will provide a fair amount of guidance on theis if needed. It is possible that if done well this could be turned into a publication</strong></p>
-<section id="project-summary" class="level2">
-<h2 class="anchored" data-anchor-id="project-summary">Project Summary</h2>
-<p>The purpose of this project is to determine whether the Pixel-Wise T-Test (PWTT), originally developed by Ollie Ballinger, for damage detection in war zones, can be adapted to post-fire structure-damage screening in the wildland-urban interface.</p>
-<p>PWTT detects abrupt changes in Synthetic Aperture Radar (SAR) backscatter from the Sentinel-1 satellites. It does not directly see damage. In urban warfare, abrupt SAR change near buildings is often a reasonable proxy for structural destruction. In WUI fires, the interpretation is less direct because houses, trees, shrubs, vehicles, fences, and bare ground are often mixed inside the same 10 m Sentinel-1 pixels.</p>
-<p>This project will use Google Earth Engine. This is the most practical way to avoid building a local Sentinel-1 processing pipeline, which is beyond what is reasonable to expect in this course. This is being carried out, not necessarily to prove that radar can replace visual interpretation, or deep learning algorithms, but rather to test whether this simple and easily reproducible change statistic can help identify buildings or neighborhoods that should receive closer review after a wildfire.</p>
-<p>This makes the wildfire application interesting because:</p>
-<ul>
-<li>Burned vegetation near a house may be correlated with structure loss.</li>
-<li>Burned vegetation near a house may create false positives.</li>
-<li>Small homes may occupy less than one Sentinel-1 pixel.</li>
-<li>Tree canopy can obscure or dominate the radar response.</li>
-<li>Suppression activity, debris removal, wet soil, and post-fire cleanup can also change backscatter.</li>
-</ul>
-<p>The study question is:</p>
-<blockquote class="blockquote">
-<p>Can the Pixel-Wise T-Test identify burned or destroyed structures in a context where they are surrounded by other abrupt post-fire changes, e.g.&nbsp;burned vegetation?</p>
-</blockquote>
+<section id="grading" class="level2">
+<h2 class="anchored" data-anchor-id="grading">Grading</h2>
+<p>Grading is based on the group project, and in class tutorials. In class tutorials will be pretty short and I will wok through them.</p>
+<p>There will be multiple stages of the report writing process that will be submitted and graded.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Assignment</th>
+<th>Weight</th>
+<th>Due Date</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>In class tutorials</td>
+<td>10%</td>
+<td>2026-09-15</td>
+</tr>
+<tr class="even">
+<td>Project Outline</td>
+<td>10%</td>
+<td>2026-09-15</td>
+</tr>
+<tr class="odd">
+<td>Draft 1</td>
+<td>10%</td>
+<td>2026-10-06</td>
+</tr>
+<tr class="even">
+<td>Draft 2</td>
+<td>20%</td>
+<td>2026-11-17</td>
+</tr>
+<tr class="odd">
+<td>Final Project Report</td>
+<td>30%</td>
+<td>2026-12-08</td>
+</tr>
+<tr class="even">
+<td>Presentation</td>
+<td>20%</td>
+<td>2026-12-08</td>
+</tr>
+</tbody>
+</table>
 </section>
-<section id="learning-goals" class="level2">
-<h2 class="anchored" data-anchor-id="learning-goals">Learning Goals</h2>
-<p>By the end of the project, students should be able to:</p>
-<ul>
-<li>Explain the PWTT algorithm in plain language.</li>
-<li>Run a reproducible Earth Engine damage-detection workflow.</li>
-<li>Choose defensible pre-fire and post-fire time windows.</li>
-<li>Attach raster change scores to building footprints.</li>
-<li>Evaluate precision, recall, false positives, and false negatives against reference labels.</li>
-<li>Explain how WUI vegetation complicates building-damage interpretation.</li>
-<li>Make a clear recommendation about whether PWTT is useful for wildfire response.</li>
-</ul>
-</section>
-<section id="starting-materials" class="level2">
-<h2 class="anchored" data-anchor-id="starting-materials">Starting Materials</h2>
-<p>Read:</p>
-<ul>
-<li>Ballinger, O. 2025. <em>Open access battle damage detection via Pixel-Wise T-Test on Sentinel-1 imagery</em>. <a href="https://doi.org/10.1016/j.rse.2025.115025">https://doi.org/10.1016/j.rse.2025.115025</a></li>
-<li>PWTT GitHub repository: <a href="https://github.com/oballinger/PWTT" class="uri">https://github.com/oballinger/PWTT</a></li>
-<li>Google Earth Engine Sentinel-1 guide: <a href="https://developers.google.com/earth-engine/guides/sentinel1" class="uri">https://developers.google.com/earth-engine/guides/sentinel1</a></li>
-</ul>
-<p>Use the PWTT repository as a starting point.</p>
-</section>
-<section id="recommended-study-design" class="level2">
-<h2 class="anchored" data-anchor-id="recommended-study-design">Recommended Study Design</h2>
-<p>Select three to five wildfires and corresponding AOIs in WUI areas with known structure damage. Good candidates are events with public structure-damage maps, or well-documented post-fire imagery that you can annotate. I will help this.</p>
-<p>Minimum scope:</p>
-<ul>
-<li>three wildfires.</li>
-<li>Three communities or bounded WUI AOIs.</li>
-<li>Approximately 500-5,000 building footprints.</li>
-<li>One reference label set for validation.</li>
-</ul>
-<p>The event should have enough damaged and undamaged buildings to make <a href="https://en.wikipedia.org/wiki/Precision_and_recall">precision and recall</a> meaningful. Avoid AOIs where nearly every building burned or where almost no buildings burned (A ~ 50/50 split would be ideal).</p>
-<p>You can use the code from the GitHub repo as a starting point. Make reasonable changes such as renaming variables in your notebook or comments so the workflow refers to fire dates rather than war dates.</p>
-<section id="stratification-of-data" class="level3">
-<h3 class="anchored" data-anchor-id="stratification-of-data">Stratification of Data</h3>
-<p>Stratification should be based on pre-fire vegetation and land-cover context, not on the PWTT output itself. The goal is to ask where PWTT works well or fails and why. For example, are false positives concentrated around intact houses with burned vegetation nearby.</p>
-<p>Create one table with one row per building (buildings from all fires/AOIs are pooled here). Before running the final accuracy assessment, attach context variables to each building footprint:</p>
-<pre class="text"><code>building_id
-damage_label
-PWTT_T_mean
-PWTT_T_max
-PWTT_ring_10_30m
-pre_fire_tree_cover_30m
-pre_fire_NDVI_30m
-landcover_class
-dNBR_30m
-prediction</code></pre>
-<p>Determine vegetation characteristics within rings around each (labeled) building. You can decide on the ring size. Some suggestions to consider:</p>
-<ul>
-<li>Building footprint: likely structure signal.</li>
-<li>0-10 m ring: immediate defensible-space context (and ~ pixel size).</li>
-<li>10-30 m ring: near-structure vegetation and parcel fuels.</li>
-<li>30-100 m ring: neighborhood fuel context.</li>
-</ul>
-<p>Then divide buildings into a small number of pre-fire context classes (and join to table discussed above). Keep the categories simple enough that each group still has enough damaged and undamaged buildings for evaluation, e.g.:</p>
-<pre class="text"><code>low vegetation near building
-moderate vegetation near building
-high vegetation near building
-tree-dominated
-shrub-dominated
-grass-dominated
-dense built-up</code></pre>
-<p>For each stratum, report precision, recall, F1, and the number of damaged and undamaged buildings. The writeup should explicitly compare error patterns across strata. For example, if precision drops sharply in high-tree-cover parcels, that is evidence that PWTT is responding to vegetation change as well as structure change.</p>
-</section>
-</section>
-<section id="data-sources" class="level2">
-<h2 class="anchored" data-anchor-id="data-sources">Data Sources</h2>
-<section id="sentinel-1" class="level3">
-<h3 class="anchored" data-anchor-id="sentinel-1">Sentinel-1</h3>
-<p>Use Earth Engine’s <code>COPERNICUS/S1_GRD_FLOAT</code> collection through the PWTT code. Earth Engine provides calibrated, orthorectified Sentinel-1 GRD imagery and metadata making it easy to filter and use.</p>
-<p>Recommended settings:</p>
-<ul>
-<li>Polarizations: <code>VV</code> and <code>VH</code>.</li>
-<li>Instrument mode: <code>IW</code>.</li>
-</ul>
-<p>(Also, be a ble to explain what these terms mean) only as a comparison.</p>
-</section>
-<section id="building-footprints" class="level3">
-<h3 class="anchored" data-anchor-id="building-footprints">Building Footprints</h3>
-<p>Use one of these approaches:</p>
-<ol type="1">
-<li><strong>Default:</strong> Microsoft Building Footprints in Earth Engine or another already available GEE asset.</li>
-<li><strong>Preferred:</strong> Overture buildings exported to GeoPackage/GeoJSON/GeoParquet and uploaded as a GEE table asset.</li>
-</ol>
-<p>Overture releases are definitely available for summer 2026 fires. Old releases are not available indefinitely. Overture’s public release retention is limited, but may be available from mirrors such as Fused. If using Overture, record:</p>
-<pre class="text"><code>overture_release
-download_date
-AOI
-query_or_udf
-source_url_or_path
-schema_version_if_known</code></pre>
-<p>I will help you with using Overture.</p>
-</section>
-<section id="reference-labels" class="level3">
-<h3 class="anchored" data-anchor-id="reference-labels">Reference Labels</h3>
-<p>Validation labels may come from:</p>
-<ul>
-<li>Official structure-damage inspections.</li>
-<li>Manually interpreting high-resolution pre/post imagery.</li>
-<li>Existing disaster datasets such as xBD, if the selected fire is included.</li>
-</ul>
-<p>Every label must distinguish at least:</p>
-<pre class="text"><code>destroyed_or_major_damage
-not_destroyed
-uncertain
-not_visible
-footprint_mismatch</code></pre>
-<p>For model evaluation, collapse labels to binary (destroyed, not destroyed) only after removing or separately reporting <code>uncertain</code>, <code>not_visible</code>, and <code>footprint_mismatch</code>.</p>
-</section>
-<section id="modify-the-urban-mask" class="level3">
-<h3 class="anchored" data-anchor-id="modify-the-urban-mask">Modify the Urban Mask</h3>
-<p>The PWTT code masks results using Dynamic World built probability. This is reasonable for dense urban battle damage but not likely to work well in WUI settings.</p>
-<ul>
-<li>Try changing the threshold for Dynamic World built probability so that does not discard mixed vegetation-building pixels near homes.</li>
-<li>Try making a mask(or masks) based on density of structures in the buildings layer.</li>
-</ul>
-</section>
-<section id="building-scores" class="level3">
-<h3 class="anchored" data-anchor-id="building-scores">Building Scores</h3>
-<p>Reduce the PWTT raster to building footprints.</p>
-<p>At minimum, calculate:</p>
-<pre class="text"><code>building_id
-T_mean
-T_max
-p_value_mean
-n_pre
-n_post
-damage_prediction
-building_area</code></pre>
-<p>Also calculate a nearby vegetation/context score:</p>
-<pre class="text"><code>T_ring_10_30m
-dNBR_or_NBR_change
-pre_fire_tree_or_vegetation_fraction
-distance_to_fire_perimeter</code></pre>
-<p>The ring statistic is important because it helps distinguish “the building changed” from “the vegetation around the building changed.”</p>
-</section>
-<section id="choose-thresholds" class="level3">
-<h3 class="anchored" data-anchor-id="choose-thresholds">5. Choose Thresholds</h3>
-<p>Do not assume the battle-damage threshold works for wildfire.</p>
-<p>Evaluate at least four thresholds:</p>
-<pre class="text"><code>T &gt; 2.0
-T &gt; 3.3
-T &gt; 4.0
-T &gt; 5.0</code></pre>
-<p>Then choose a recommended wildfire threshold based on the precision-recall tradeoff. For screening, high recall may be acceptable. For public damage counts, precision matters more.</p>
-</section>
-<section id="validation" class="level3">
-<h3 class="anchored" data-anchor-id="validation">Validation</h3>
-<p>Compare predictions to reference labels at the building level.</p>
-<p>Report:</p>
-<ul>
-<li>Confusion matrix.</li>
-<li>Precision.</li>
-<li>Recall.</li>
-<li>F1.</li>
-<li>AUC or precision-recall curve if using continuous <code>T_statistic</code>.</li>
-<li>Accuracy by building size class.</li>
-<li>Accuracy by vegetation context class.</li>
-<li>At least 10 mapped false positives and 10 mapped false negatives. ( As an Appendix)</li>
-</ul>
-<p>For the false positives, classify likely causes:</p>
-<pre class="text"><code>burned vegetation near intact building
-building footprint offset
-small ancillary structure
-post-fire cleanup or debris movement
-shadow/layover/topography
-actual damage missed in reference labels
-other_or_unknown</code></pre>
-</section>
-</section>
-<section id="deliverables" class="level2">
-<h2 class="anchored" data-anchor-id="deliverables">Deliverables</h2>
-<section id="reproducible-notebook" class="level3">
-<h3 class="anchored" data-anchor-id="reproducible-notebook">1. Reproducible Notebook</h3>
-<p>Submit a notebook that:</p>
-<ul>
-<li>Authenticates to Earth Engine.</li>
-<li>Defines the AOI and dates.</li>
-<li>Runs PWTT or a clearly documented adaptation.</li>
-<li>Attaches scores to building footprints.</li>
-<li>Exports a table of building-level results.</li>
-<li>Produces maps of <code>T_statistic</code>, predicted damage, and validation labels.</li>
-</ul>
-</section>
-<section id="building-level-results-table" class="level3">
-<h3 class="anchored" data-anchor-id="building-level-results-table">2. Building-Level Results Table</h3>
-<p>Submit a CSV or GeoPackage with:</p>
-<pre class="text"><code>building_id
-geometry_or_centroid
-building_source
-building_source_release_or_date
-T_mean
-T_max
-T_ring_10_30m
-dNBR_or_NBR_change
-label
-prediction
-threshold
-notes</code></pre>
-</section>
-<section id="report" class="level3">
-<h3 class="anchored" data-anchor-id="report">Report</h3>
-<p>The report should include:</p>
-<ul>
-<li>Event and AOI description.</li>
-<li>Data sources and dates.</li>
-<li>Method summary.</li>
-<li>Threshold comparison.</li>
-<li>Validation metrics.</li>
-<li>Error analysis focused on WUI vegetation.</li>
-<li>Recommendation: useful, useful only for emergency, or not useful for this fire.</li>
-</ul>
-</section>
-<section id="presentation" class="level3">
-<h3 class="anchored" data-anchor-id="presentation">Presentation</h3>
-<p>Presentation should include at least:</p>
-<ul>
-<li>One slide explaining PWTT.</li>
-<li>One map of the (each) AOI and buildings.</li>
-<li>One map of PWTT scores.</li>
-<li>One validation figure or table.</li>
-<li>One slide on false positives/false negatives.</li>
-<li>One final recommendation.</li>
-</ul>
-</section>
-</section>
-<section id="important-points" class="level2">
-<h2 class="anchored" data-anchor-id="important-points">Important points</h2>
-<ul>
-<li><em>Reproducible workflow</em>- Notebook runs, dates/AOI are explicit, exports are documented.</li>
-<li><em>Data provenance</em>- Building, imagery, label, and release metadata are recorded.</li>
-<li><em>PWTT adaptation</em>- Uses PWTT correctly and addresses WUI-specific masking/vegetation issues.</li>
-<li><em>Validation</em>- Metrics are correct, thresholds are compared, uncertainty is handled honestly.</li>
-<li><em>Error analysis</em>- False positives and false negatives are mapped and interpreted.</li>
-<li><em>Communication</em>- Report and presentation make a clear, evidence-based recommendation.</li>
-</ul>
+<section id="in-class-tutorials" class="level2">
+<h2 class="anchored" data-anchor-id="in-class-tutorials">In Class Tutorials</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Date</th>
+<th>Subject</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2026-08-25</td>
+<td>Datums, Projections, and Coordinate Reference Systems</td>
+</tr>
+<tr class="even">
+<td>2026-09-01</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>2026-09-08</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>2026-09-15</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>2026-09-22</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>2026-09-29</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>2026-10-06</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>2026-10-13</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>2026-10-20</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>2026-10-27</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>2026-11-03</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>2026-11-10</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>2026-11-17</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>2026-11-24</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>2026-12-01</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>2026-12-08</td>
+<td></td>
+</tr>
+</tbody>
+</table>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->

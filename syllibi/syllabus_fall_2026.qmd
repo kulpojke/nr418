@@ -1,0 +1,51 @@
+---
+title: ""
+format:
+  html:
+    theme: cyborg
+    css: ../src/style/terminal_theme.css
+    include-after-body: ../src/style/terminal_theme_include.html
+resources:
+  - ../srcstyle/terminal_theme.js
+---
+
+
+## Grading 
+
+Grading is based on the group project, and in class tutorials.  In class tutorials will be pretty short and I will wok through them.  
+
+There will be multiple stages of the report writing process that will be submitted and graded.   
+
+| Assignment				  | Weight | Due Date |
+|------------------------| -------|----------|
+| In class tutorials	 | 10%    | 2026-09-15 |
+| Project Outline		 | 10%    | 2026-09-15 |
+| Draft 1       		 | 10%    | 2026-10-06 |
+| Draft 2	     		 | 20%    | 2026-11-17 |
+| Final Project Report	 | 30%    | 2026-12-08 |
+| Presentation           | 20%    | 2026-12-08 |
+
+
+## In Class Tutorials
+
+|Date | Subject |
+| -----------| --------------------------------|
+| 2026-08-25 | Datums, Projections, and Coordinate Reference Systems |
+| 2026-09-01 | |
+| 2026-09-08 | |
+| 2026-09-15 | |
+| 2026-09-22 | |
+| 2026-09-29 | |
+| 2026-10-06 | |
+| 2026-10-13 | |
+| 2026-10-20 | |
+| 2026-10-27 | |
+| 2026-11-03 | |
+| 2026-11-10 | |
+| 2026-11-17 | |
+| 2026-11-24 | |
+| 2026-12-01 | |
+| 2026-12-08 | |
+
+
+
