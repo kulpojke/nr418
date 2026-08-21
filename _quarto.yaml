@@ -5,6 +5,7 @@ project:
     - index.qmd
     - projects/annotations.qmd
     - projects/plastics.qmd
+    - projects/pwtt.qmd
 
   resources:
     - img

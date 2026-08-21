@@ -1,0 +1,315 @@
+---
+title: ""
+format:
+  html:
+    theme: cyborg
+    css: ../src/style/terminal_theme.css
+    include-after-body: ../src/style/terminal_theme_include.html
+resources:
+  - ../srcstyle/terminal_theme.js
+---
+
+
+# Repurposing the Pixel Wise T-Test for Wildfire Damage Detection
+
+**NOTE: This project uses Google Earth Engine.  You will have to code.  It is a great opportunity to lear to code, as most of the code is already provided, and you just need to modify it.  Some experience with Python would be helpful.**
+
+## Project Summary
+
+The purpose of this project is to determine whether the Pixel-Wise T-Test (PWTT), originally developed by Ollie Ballinger, for damage detection in war zones, can be adapted to post-fire structure-damage screening in the wildland-urban interface.
+
+This project will use Google Earth Engine.  This is the most practical way to avoid building a local Sentinel-1 processing pipeline, which is beyond what is reasonable to expect in this course. This is being carried out, not to prove that radar can replace visual interpretation, but rather to test whether this simple and easily reproducible change statistic can help identify buildings or neighborhoods that should receive closer review after a wildfire.
+
+The study question is:
+
+> Can PWTT identify burned or destroyed structures in a context where they are surrounded by other abrupt post-fire changes, e.g. burned vegetation? 
+
+PWTT detects abrupt changes in Synthetic Aperture Radar (SAR) backscatter from the Sentinel-1 satellites. It does not directly see damage. In urban warfare, abrupt SAR change near buildings is often a reasonable proxy for structural destruction. In WUI fires, the interpretation is less direct because houses, trees, shrubs, vehicles, fences, and bare ground are often mixed inside the same 10 m Sentinel-1 pixels.
+
+This makes the wildfire application interesting because:
+
+- Burned vegetation near a house may be correlated with structure loss.
+- Burned vegetation near a house may create false positives.
+- Small homes may occupy less than one Sentinel-1 pixel.
+- Tree canopy can obscure or dominate the radar response.
+- Suppression activity, debris removal, wet soil, and post-fire cleanup can also change backscatter.
+
+
+## Learning Goals
+
+By the end of the project, students should be able to:
+
+- Explain the PWTT algorithm in plain language.
+- Run a reproducible Earth Engine damage-detection workflow.
+- Choose defensible pre-fire and post-fire time windows.
+- Attach raster change scores to building footprints.
+- Evaluate precision, recall, false positives, and false negatives against reference labels.
+- Explain how WUI vegetation complicates building-damage interpretation.
+- Make a clear recommendation about whether PWTT is useful for wildfire response.
+
+## Starting Materials
+
+Read:
+
+- Ballinger, O. 2025. *Open access battle damage detection via Pixel-Wise T-Test on Sentinel-1 imagery*. [https://doi.org/10.1016/j.rse.2025.115025](https://doi.org/10.1016/j.rse.2025.115025)
+- PWTT GitHub repository: <https://github.com/oballinger/PWTT>
+- Google Earth Engine Sentinel-1 guide: <https://developers.google.com/earth-engine/guides/sentinel1>
+
+Use the PWTT repository as a starting point. 
+
+## Recommended Study Design
+
+Select one to five wildfires and corresponding AOIs in WUI areas with known structure damage. Good candidates are events with public structure-damage maps, or well-documented post-fire imagery that you can annotate.  I can give you some pointers on this.
+
+Minimum scope:
+
+- One wildfire.
+- One community or bounded WUI AOI.
+- Approximately 500-5,000 building footprints.
+- One reference label set for validation.
+
+The event should have enough damaged and undamaged buildings to make [precision and recall](https://en.wikipedia.org/wiki/Precision_and_recall) meaningful. Avoid an AOI where nearly every building burned or where almost no buildings burned (A ~ 50/50 split would be ideal).
+
+You can use the code from the GitHub repo as a starting point. Make reasonable changes such as renameing variables in your notebook or comments so the workflow refers to fire dates rather than war dates. The underlying PWTT function uses conflict-oriented parameter names, but the statistical operation is simply pre-event versus post-event change detection.
+
+### Stratification
+
+Stratification should be based on **pre-fire vegetation and land-cover context**, not on the PWTT output itself. The goal is to ask where PWTT works well or fails and why. For example, are false positives concentrated around intact houses with burned vegetation nearby.
+
+Create one analysis table with one row per building. Before running the final accuracy assessment, attach context variables to each building footprint:
+
+```text
+building_id
+damage_label
+PWTT_T_mean
+PWTT_T_max
+PWTT_ring_10_30m
+pre_fire_tree_cover_30m
+pre_fire_NDVI_30m
+landcover_class
+dNBR_30m
+prediction
+```
+
+Determine vegetation characteristics within rings around each (labeled) building. You can decide on the ring size. Some suggestions to consider:
+
+- Building footprint: likely structure signal.
+- 0-10 m ring: immediate defensible-space context.
+- 10-30 m ring: near-structure vegetation and parcel fuels.
+- 30-100 m ring: neighborhood fuel context.
+
+Then divide buildings into a small number of pre-fire context classes. Keep the categories simple enough that each group still has enough damaged and undamaged buildings for evaluation, e.g.:
+
+```text
+low vegetation near building
+moderate vegetation near building
+high vegetation near building
+tree-dominated
+shrub-dominated
+grass-dominated
+dense built-up
+```
+
+For each stratum, report precision, recall, F1, and the number of damaged and undamaged buildings. The writeup should explicitly compare error patterns across strata. For example, if precision drops sharply in high-tree-cover parcels, that is evidence that PWTT is responding to vegetation change as well as structure change.
+
+
+## Data Sources
+
+### Sentinel-1
+
+Use Earth Engine's `COPERNICUS/S1_GRD_FLOAT` collection through the PWTT code. Earth Engine provides calibrated, orthorectified Sentinel-1 GRD imagery and metadata making it easy to filter and use.
+
+Recommended settings:
+
+- Polarizations: `VV` and `VH`.
+- Instrument mode: `IW`.
+
+(Also, be a ble to explain what these terms mean)
+only as a comparison.
+
+### Building Footprints
+
+Use one of these approaches:
+
+1. **Default:** Microsoft Building Footprints in Earth Engine or another already available GEE asset.
+2. **Preferred:** Overture buildings exported to GeoPackage/GeoJSON/GeoParquet and uploaded as a GEE table asset. 
+
+Overture releases are definitely available for summer 2026 fires. Old releases are not available indefinitely. Overture's public release retention is limited, but may be available from mirrors such as Fused. If using Overture, record:
+
+```text
+overture_release
+download_date
+AOI
+query_or_udf
+source_url_or_path
+schema_version_if_known
+```
+
+I will help you with using Overture.
+
+### Reference Labels
+
+Validation labels may come from:
+
+- Official structure-damage inspections.
+- Manually interpreting high-resolution pre/post imagery.
+- Existing disaster datasets such as xBD, if the selected fire is included.
+
+Every label must distinguish at least:
+
+```text
+destroyed_or_major_damage
+not_destroyed
+uncertain
+not_visible
+footprint_mismatch
+```
+
+For model evaluation, collapse labels to binary (destroyed, not destroyed) only after removing or separately reporting `uncertain`, `not_visible`, and `footprint_mismatch`.
+
+
+
+### Modify the Urban Mask
+
+The PWTT code masks results using Dynamic World built probability. This is reasonable for dense urban battle damage but not likely to work well in WUI settings.
+
+- Try changing the threshold for Dynamic World built probability so that does not discard mixed vegetation-building pixels near homes.
+- Try making a mask(or masks) based on density of structures in the buildings layer.
+
+
+### Building Scores
+
+Reduce the PWTT raster to building footprints.
+
+At minimum, calculate:
+
+```text
+building_id
+T_mean
+T_max
+p_value_mean
+n_pre
+n_post
+damage_prediction
+building_area
+```
+
+Also calculate a nearby vegetation/context score:
+
+```text
+T_ring_10_30m
+dNBR_or_NBR_change
+pre_fire_tree_or_vegetation_fraction
+distance_to_fire_perimeter
+```
+
+The ring statistic is important because it helps distinguish "the building changed" from "the vegetation around the building changed."
+
+### 5. Choose Thresholds
+
+Do not assume the battle-damage threshold works for wildfire.
+
+Evaluate at least four thresholds:
+
+```text
+T > 2.0
+T > 3.3
+T > 4.0
+T > 5.0
+```
+
+Then choose a recommended wildfire threshold based on the precision-recall tradeoff. For screening, high recall may be acceptable. For public damage counts, precision matters more.
+
+### Validation
+
+Compare predictions to reference labels at the building level.
+
+Report:
+
+- Confusion matrix.
+- Precision.
+- Recall.
+- F1.
+- AUC or precision-recall curve if using continuous `T_statistic`.
+- Accuracy by building size class.
+- Accuracy by vegetation context class.
+- At least 10 mapped false positives and 10 mapped false negatives. ( As an Appendix)
+
+For the false positives, classify likely causes:
+
+```text
+burned vegetation near intact building
+building footprint offset
+small ancillary structure
+post-fire cleanup or debris movement
+shadow/layover/topography
+actual damage missed in reference labels
+other_or_unknown
+```
+
+## Deliverables
+
+### 1. Reproducible Notebook
+
+Submit a notebook that:
+
+- Authenticates to Earth Engine.
+- Defines the AOI and dates.
+- Runs PWTT or a clearly documented adaptation.
+- Attaches scores to building footprints.
+- Exports a table of building-level results.
+- Produces maps of `T_statistic`, predicted damage, and validation labels.
+
+### 2. Building-Level Results Table
+
+Submit a CSV or GeoPackage with:
+
+```text
+building_id
+geometry_or_centroid
+building_source
+building_source_release_or_date
+T_mean
+T_max
+T_ring_10_30m
+dNBR_or_NBR_change
+label
+prediction
+threshold
+notes
+```
+
+### Report
+
+The report should  include:
+
+- Event and AOI description.
+- Data sources and dates.
+- Method summary.
+- Threshold comparison.
+- Validation metrics.
+- Error analysis focused on WUI vegetation.
+- Recommendation: useful, useful only for emergency, or not useful for this fire.
+
+### Presentation
+
+Presentation should include at least:
+
+- One slide explaining PWTT.
+- One map of the (each) AOI and buildings.
+- One map of PWTT scores.
+- One validation figure or table.
+- One slide on false positives/false negatives.
+- One final recommendation.
+
+## Important points
+
+
++ _Reproducible workflow_- Notebook runs, dates/AOI are explicit, exports are documented. 
++ _Data provenance_- Building, imagery, label, and release metadata are recorded. 
++ _PWTT adaptation_- Uses PWTT correctly and addresses WUI-specific masking/vegetation issues. 
++ _Validation_- Metrics are correct, thresholds are compared, uncertainty is handled honestly. 
++ _Error analysis_- False positives and false negatives are mapped and interpreted. 
++ _Communication_- Report and presentation make a clear, evidence-based recommendation. 
+
+

@@ -1,0 +1,237 @@
+# FUTURE: PWTT-Style Wildfire Damage Detection With NISAR
+
+## Purpose
+
+This is a future project idea, not a ready assignment.
+
+The current PWTT wildfire project should use Google Earth Engine and Sentinel-1 because the existing PWTT code is built around Earth Engine image collections. A later version could ask students to build a non-GEE Python workflow using NISAR data, once the NISAR archive is mature enough to support a meaningful pre-fire baseline.
+
+The research question would be:
+
+> Can NISAR L-band SAR improve post-fire structure-damage screening in wildland-urban interface areas, especially where vegetation confounds Sentinel-1 C-band change detection?
+
+## Why NISAR Might Help
+
+NISAR is scientifically attractive for WUI fire work because it includes L-band SAR. L-band has a longer wavelength than Sentinel-1 C-band, so it interacts differently with woody vegetation, canopy structure, and built objects.
+
+Potential advantages:
+
+- All-weather, day/night observations.
+- Longer wavelength than Sentinel-1 may provide complementary sensitivity in tree-covered WUI neighborhoods.
+- Exact-repeat SAR observations are suitable for change detection.
+- Analysis-ready geocoded products should eventually reduce the burden of SAR preprocessing.
+
+Important caveat:
+
+NISAR may help reveal vegetation and woody-biomass change, but that does not automatically mean better building-damage classification. In WUI settings, vegetation change is both a useful correlate of structure loss and a source of false positives.
+
+## Current Data Caveat
+
+As of August 2026, this should be treated as a future-facing project.
+
+Reasons:
+
+- NISAR products are newer than Sentinel-1 and the archive is still short for pre/post baseline work.
+- A PWTT-style method ideally needs many pre-event observations, often around 12 months.
+- Early NISAR product versions may not be directly comparable across processing maturity levels.
+- NISAR is not currently a drop-in replacement for the PWTT Earth Engine code.
+
+Do not mix product versions casually. Processing changes can look like land-surface change.
+
+## Recommended Product
+
+Start with an analysis-ready geocoded product rather than raw SLC data.
+
+Likely target:
+
+```text
+NISAR L-band GCOV
+Geocoded polarimetric covariance
+Radiometrically terrain-corrected gamma-naught power
+```
+
+For a first student version, avoid interferometry and phase-based products. Use amplitude/power change only, analogous to the Sentinel-1 PWTT approach.
+
+## Non-GEE Python Workflow
+
+This version should be implemented in Python, with QGIS used only for inspection and map composition.
+
+Suggested stack:
+
+```text
+earthaccess or asf_search
+geopandas
+shapely
+pystac-client if needed
+rasterio
+rioxarray
+xarray
+dask
+numpy
+scipy
+scikit-learn
+h3
+```
+
+### 1. Select Event and AOI
+
+Choose a fire that occurs after enough NISAR observations exist.
+
+Record:
+
+```text
+fire_name
+ignition_date
+containment_date
+AOI_source
+NISAR_product
+NISAR_processing_version
+pre_event_dates
+post_event_dates
+building_footprint_source
+reference_label_source
+```
+
+Minimum target:
+
+- At least 6-12 pre-fire NISAR acquisitions from consistent geometry.
+- At least 1-3 post-fire acquisitions.
+- Public structure-damage labels or a carefully reviewed manual label sample.
+
+### 2. Search and Download NISAR Products
+
+Use an API-driven download workflow rather than manual clicking.
+
+Possible route:
+
+```python
+import earthaccess
+
+earthaccess.login()
+
+results = earthaccess.search_data(
+    short_name="NISAR_PRODUCT_SHORT_NAME",
+    bounding_box=(-120.15, 35.20, -120.00, 35.32),
+    temporal=("2027-01-01", "2028-01-01")
+)
+
+files = earthaccess.download(results, local_path="data/nisar")
+```
+
+The exact `short_name` and product query should be updated when the project is actually assigned.
+
+### 3. Harmonize the Raster Stack
+
+For each acquisition:
+
+- Read the relevant polarization or covariance-derived power bands.
+- Reproject to a common CRS if needed.
+- Clip to the AOI.
+- Resample to a common grid.
+- Mask invalid pixels.
+- Keep only consistent orbit/geometry groups where possible.
+- Convert power to log scale if appropriate and documented.
+
+The output should be a tidy raster stack:
+
+```text
+time
+orbit_or_track
+polarization_or_band
+y
+x
+value
+```
+
+### 4. Compute a PWTT-Style Statistic
+
+Start with a simple per-pixel Welch-style statistic:
+
+```text
+T = abs(mean_post - mean_pre) / sqrt(var_pre / n_pre + var_post / n_post)
+```
+
+Compute this separately for each band and orbit/track group, then combine groups with a transparent rule:
+
+- Maximum absolute statistic across bands.
+- Mean of standardized statistics.
+- Stouffer-style weighted combination.
+
+Keep the first version simple and defensible.
+
+### 5. Add WUI Context Features
+
+For each building footprint, calculate:
+
+```text
+T_mean_inside_footprint
+T_max_inside_footprint
+T_ring_10_30m
+pre_fire_vegetation_fraction
+post_fire_burn_severity
+building_area
+distance_to_fire_perimeter
+```
+
+The ring statistic is essential. It helps test whether NISAR is detecting the building itself or the surrounding burned vegetation.
+
+### 6. Compare Against Sentinel-1
+
+This project is most useful as a comparison.
+
+Run the existing Sentinel-1 PWTT workflow for the same AOI and labels, then compare:
+
+```text
+Sentinel-1 C-band PWTT score
+NISAR L-band PWTT-style score
+Sentinel-2 dNBR or NBR change
+reference damage label
+```
+
+Ask:
+
+- Does NISAR improve recall for tree-covered homes?
+- Does NISAR increase false positives from vegetation change?
+- Are NISAR errors spatially different from Sentinel-1 errors?
+- Does combining Sentinel-1, NISAR, and dNBR outperform any single input?
+
+### 7. Model Options
+
+Baseline:
+
+```text
+threshold on NISAR T
+```
+
+Better:
+
+```text
+logistic regression or gradient boosting
+features = NISAR T, Sentinel-1 T, dNBR, ring T, vegetation fraction, building area
+```
+
+Do not skip the threshold baseline. The point is to understand whether NISAR adds signal, not only whether a black-box model can fit the labels.
+
+## Deliverables for a Future Assignment
+
+- Reproducible Python notebook or script.
+- Download manifest with product IDs and processing versions.
+- NISAR change raster as GeoTIFF.
+- Building-level GeoPackage or CSV with NISAR, Sentinel-1, and vegetation features.
+- Validation metrics and threshold curves.
+- Error analysis focused on WUI vegetation and canopy cover.
+- Short comparison of Sentinel-1-only, NISAR-only, and combined models.
+
+## Why This Should Wait
+
+This is probably too much for the current undergraduate project unless most data are prepared in advance.
+
+The blockers are:
+
+- NISAR archive length.
+- Product maturity and version consistency.
+- Earthdata/ASF download complexity.
+- Raster stack harmonization.
+- Need for SAR-specific interpretation.
+
+This becomes a good project once a suitable post-2026 fire has enough repeated NISAR coverage and the instructor can provide a starter data cube or a working download script.

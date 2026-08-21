@@ -39,22 +39,26 @@ navigation-mode: vertical
 </style>
 ```
 
-# NR 418
+# NR 418 {style="font-size:0.7em"}
 
 ::: {style="font-size:0.7em"}
 [Use arrows or menu in bottom left corner to navigate amongst slides.]{style="font-size:0.6em"}
 
-::: {.columns}
-::: {.column width="50%"}
-__Course Materials__  
-x
-:::
 
-::: {.column width="50%"}
+
+__Syllabus__  
+x
+
+
+
 __Projects__  
-[Annotations](projects/annotations.qmd){style="font-size:0.8em"}
-:::
-:::
+[Fire Damage Annotations](projects/annotations.qmd){style="font-size:0.8em"}
+[Remote Sensing of Agricultural Plastics](projects/plastics.qmd){style="font-size:0.8em"}
+[Detection of Abandoned Logging Roads]()
+[Birds]()
+[Poison]()
+[Pixelwise T-test](projects/pwtt.qmd)
+
 
 :::
 

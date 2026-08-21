@@ -16,7 +16,7 @@ Area of interest
   -> review and export the results
 ```
 
-This is feasible for an advanced class if the first version is limited to one event, one metropolitan-scale area, and imagery selected in advance. A general global platform would be a substantially larger project.
+This is a prototype version. It will be limited to one event and one area, with imagery selected in advance.
 
 ## Core workflow
 
@@ -77,27 +77,152 @@ Labels should be described as observations made from specified imagery, not as a
 
 ## Possible implementations
 
-### Standalone multi-user web application
-
-This is the strongest option if the goal is a tool that many people can use to annotate large numbers of buildings.
-
-- Preprocessing: Python, DuckDB Spatial, `h3-py`, and GeoPandas as needed.
-- Frontend: MapLibre GL JS for raster imagery and interactive building layers.
-- Backend: FastAPI with PostgreSQL/PostGIS, or a managed PostgreSQL service such as Supabase.
-- Imagery: existing XYZ/WMTS services or TiTiler for Cloud-Optimized GeoTIFFs.
-- Deployment: Docker Compose locally, followed by a small hosted deployment.
-
-This approach supports authentication, cell locking, simultaneous annotators, immediate writes, QA assignments, and progress dashboards. It also requires the most software-engineering work. MapLibre supports raster tile sources and interactive vector layers, while [TiTiler](https://developmentseed.org/titiler/endpoints/cog/) can expose COG imagery as web map tiles.
-
 ### QGIS workflow
 
 QGIS is the fastest path to a working prototype and may be preferable if the learning goal is GIS workflow design rather than web development.
 
-- Prepare a QGIS project containing imagery, H3 cells, and Overture buildings.
-- Store annotations in a GeoPackage with constrained fields and a customized attribute form.
-- Filter buildings by the active H3 ID or create one project/package per task bundle.
-- Use categorized symbology so completed labels are immediately visible.
-- Merge student GeoPackages at the end, or use PostGIS if concurrent editing is required.
+The recommended QGIS version of the project is still a data pipeline plus an annotation project. Prepare the Overture and H3 layers outside QGIS first, then give students a QGIS project that already contains the task grid, building footprints, imagery, styling, and annotation fields.
+
+#### 1. Choose the building time period
+
+.
+
+Overture buildings should be selected by **release**, not by an arbitrary date range. A release is a snapshot such as `2026-06-17.0`; it is not the date on which every building was originally mapped. For disaster annotation, pick and record the release that is the latest release available before  2022-07-22 .
+
+Important constraints:
+
+- Do not use "latest" for a class project unless the exact release is recorded.
+- Overture public release buckets retain only the most recent releases for a limited time, so download and archive the subset used for the course.
+- If the event is historical and the matching release is no longer public, use an archived copy, a previously downloaded subset, or document that the available Overture release is a proxy for the desired building inventory.
+- Record the Overture release, schema version, download date, AOI, and query used to create the local file.
+
+For a quick current-release extract, the Overture Python client can export buildings for a bounding box:
+
+```bash
+overturemaps download \
+  --bbox=-120.15,35.20,-120.00,35.32 \
+  -f geoparquet \
+  --type=building \
+  -o data/overture_buildings_latest.geoparquet
+```
+
+For a reproducible **pinned release**, prefer DuckDB so the release appears directly in the source path. Replace the release ID in the path with the release chosen for the project:
+
+```sql
+LOAD spatial;
+LOAD httpfs;
+SET s3_region = 'us-west-2';
+
+COPY (
+  SELECT
+    id AS building_id,
+    geometry
+  FROM read_parquet(
+    's3://overturemaps-us-west-2/release/2026-06-17.0/theme=buildings/type=building/*',
+    filename = true,
+    hive_partitioning = 1
+  )
+  WHERE
+    bbox.xmin <= -120.00 AND bbox.xmax >= -120.15
+    AND bbox.ymin <= 35.32 AND bbox.ymax >= 35.20
+) TO 'data/overture_buildings_2026-06-17.gpkg'
+WITH (FORMAT GDAL, DRIVER 'GPKG');
+```
+
+Use the bounding-box predicate first because it lets DuckDB skip remote Parquet chunks. If the AOI is not rectangular, run a second clip in QGIS or add a spatial intersection against an AOI polygon after the bounding-box filter.
+
+#### 2. Load Overture buildings into QGIS
+
+Add the exported GeoPackage or GeoParquet file with **Layer -> Add Layer -> Add Vector Layer**, or drag it into the QGIS canvas. Set the project CRS to an appropriate local projected CRS for editing and measurement, but keep a WGS84 copy of the building layer available for H3 generation because H3 indexes use longitude/latitude.
+
+Inspect the buildings before building the task grid:
+
+- Check whether the footprints line up with the pre-event imagery.
+- Remove or flag obvious duplicates only if the rule is documented.
+- Keep `building_id` unchanged; it is the stable identifier used in the annotation export.
+- Add fields for `overture_release`, `h3_cell`, `label`, `confidence`, `annotator_id`, `imagery_source`, `pre_image_date`, `post_image_date`, `annotation_timestamp`, and `notes`.
+
+#### 3. Assign buildings to H3 cells
+
+The cleanest assignment rule is: one building gets one H3 cell, based on an interior representative point. Do not assign a building to every H3 cell that its footprint touches.
+
+One reproducible Python script can create both the building assignment layer and the H3 task layer:
+
+```python
+import geopandas as gpd
+import h3
+from shapely.geometry import Polygon
+
+H3_RESOLUTION = 9
+OVERTURE_RELEASE = "2026-06-17.0"
+
+buildings = gpd.read_file("data/overture_buildings_2026-06-17.gpkg")
+buildings = buildings.to_crs(4326)
+
+points = buildings.geometry.representative_point()
+buildings["h3_cell"] = [
+    h3.latlng_to_cell(point.y, point.x, H3_RESOLUTION)
+    for point in points
+]
+buildings["overture_release"] = OVERTURE_RELEASE
+
+def h3_polygon(cell):
+    boundary = h3.cell_to_boundary(cell)
+    return Polygon([(lng, lat) for lat, lng in boundary])
+
+counts = buildings.groupby("h3_cell").size().rename("building_count")
+h3_cells = gpd.GeoDataFrame(
+    {"h3_cell": counts.index, "building_count": counts.values},
+    geometry=[h3_polygon(cell) for cell in counts.index],
+    crs="EPSG:4326"
+)
+
+buildings.to_file("data/buildings_with_h3.gpkg", layer="buildings", driver="GPKG")
+h3_cells.to_file(
+    "data/buildings_with_h3.gpkg",
+    layer="h3_tasks",
+    driver="GPKG",
+    mode="a"
+)
+```
+
+Load both layers into QGIS from the GeoPackage. The `buildings` layer carries the `h3_cell` assignment for each footprint, and the `h3_tasks` layer gives QGIS real polygon geometries for the H3 cells. Style `h3_tasks` by `building_count` to confirm that task sizes are reasonable before annotation begins.
+
+#### 4. Alternative: create H3 directly inside QGIS
+
+If students should practice more of the workflow in QGIS, install the **H3 Toolkit** plugin from **Plugins -> Manage and Install Plugins**. The plugin adds an H3 processing provider, but QGIS must also have the Python `h3` package available.
+
+Useful tools:
+
+- **Create H3 grid inside polygons:** generate H3 polygons for the AOI.
+- **Create H3 grid:** generate H3 polygons for the current map extent.
+- **Count points on H3 Grid:** convert building representative points into H3 polygons with counts.
+
+The QGIS-only path is:
+
+1. Run **Vector geometry -> Point on surface** on the Overture building footprints.
+2. Run **H3 -> Count points on H3 Grid** on those representative points at resolution 9 or 10.
+3. Save the output as a GeoPackage layer named `h3_tasks`.
+4. Run **Join attributes by location** so each representative point receives the containing `h3_tasks.index` value.
+5. Join that point layer back to buildings by `building_id`, then rename or copy `index` to `h3_cell`.
+6. Verify that every building has exactly one `h3_cell`.
+
+This is convenient for teaching, but the scripted Python path is easier to reproduce and audit.
+
+#### 5. Build the QGIS annotation project
+
+Once buildings and H3 cells are prepared:
+
+- Add pre-event and post-event imagery as separate raster or XYZ/WMTS layers.
+- Put `h3_tasks` above imagery with transparent fill and a visible outline.
+- Put `buildings` above imagery with categorized symbology for `label`.
+- Use a layer filter such as `"h3_cell" = '8929a1d75afffff'` when an annotator is working on one task cell.
+- Add a rule-based style for unlabeled buildings so remaining work is obvious.
+- Configure the building layer's attribute form with value maps for `label` and `confidence`.
+- Enable editing only on the annotation fields, not on `building_id`, `h3_cell`, or geometry.
+- Save the project with relative paths so the package can be moved between machines.
+
+For single-user or small-class work, each student can receive a GeoPackage containing assigned H3 cells and their buildings. For simultaneous editing, store the same layers in PostGIS and add fields such as `claimed_by`, `claimed_at`, `completed_at`, and `review_status` to the `h3_tasks` table.
 
 Advantages are rapid development, strong raster support, offline operation, and familiar editing tools. Weaknesses are distributing updates, preventing duplicate work, merging files, and supporting many simultaneous annotators. A shared PostGIS database can address concurrency but adds administration and makes the workflow less portable.
 
