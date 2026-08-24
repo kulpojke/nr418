@@ -85,13 +85,11 @@ The recommended QGIS version of the project is still a data pipeline plus an ann
 
 #### 1. Choose the building time period
 
-.
-
 Overture buildings should be selected by **release**, not by an arbitrary date range. A release is a snapshot such as `2026-06-17.0`; it is not the date on which every building was originally mapped. For disaster annotation, pick and record the release that is the latest release available before  2022-07-22 .
 
 Important constraints:
 
-- Do not use "latest" for a class project unless the exact release is recorded.
+- Do not use "latest".
 - Overture public release buckets retain only the most recent releases for a limited time, so download and archive the subset used for the course.
 - If the event is historical and the matching release is no longer public, use an archived copy, a previously downloaded subset, or document that the available Overture release is a proxy for the desired building inventory.
 - Record the Overture release, schema version, download date, AOI, and query used to create the local file.
