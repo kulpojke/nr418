@@ -36,6 +36,10 @@ navigation-mode: vertical
   height: auto;
   object-fit: contain;
 }
+
+.reveal .project-list p {
+  margin: 0.15em 0;
+}
 </style>
 ```
 
@@ -53,11 +57,17 @@ x
 
 __Projects__  
 
-[Remote Sensing of Agricultural Plastics](projects/plastics.qmd){style="font-size:0.8em"}  
-~~[Detection of Abandoned Logging Roads]()~~  
-[Birds]()  
-[Rat Poison Map]()  
-[Pixelwise T-test](projects/pwtt.qmd)  
+::: {.project-list}
+[Remote Sensing of Agricultural Plastics](projects/plastics.qmd){style="font-size:0.8em"}
+
+~~[Detection of Abandoned Logging Roads]()~~
+
+[Birds]()
+
+[Rat Poison Map]()
+
+[Pixelwise T-test](projects/pwtt.qmd)
+:::
 
 
 :::
