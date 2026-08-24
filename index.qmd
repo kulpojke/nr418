@@ -52,7 +52,7 @@ x
 
 
 __Projects__  
-<!--[Fire Damage Annotations](projects/annotations.qmd){style="font-size:0.8em"}   -->
+
 [Remote Sensing of Agricultural Plastics](projects/plastics.qmd){style="font-size:0.8em"}  
 ~~[Detection of Abandoned Logging Roads]()~~  
 [Birds]()  
