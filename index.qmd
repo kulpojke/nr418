@@ -58,7 +58,7 @@ x
 __Projects__  
 
 ::: {.project-list}
-[Remote Sensing of Agricultural Plastics](projects/plastics.qmd){style="font-size:0.8em"}
+[Remote Sensing of Agricultural Plastics](projects/plastics.qmd)
 
 ~~[Detection of Abandoned Logging Roads]()~~
 
