@@ -51,7 +51,7 @@ navigation-mode: vertical
 
 
 __Syllabus__  
-[Sylabus](docs/syllibi/syllabus_fall_2026.html)
+[Syllabus](syllibi/syllabus_fall_2026.qmd)
 
 
 
