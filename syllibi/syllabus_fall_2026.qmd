@@ -10,9 +10,15 @@ resources:
 ---
 
 
+## Course Objectives
+
++ Acquire, organize, and analyze complex spatial data extracted from a diverse range of sources GIS  software.
++ Implement GIS modeling applications and validation techniques to solve advanced spatial problems.
++ Apply quantitative reasoning skills to conceptualize, develop, and successfully execute complete spatial analysis projects.
+
 ## Grading 
 
-Grading is based on the group project, and in class tutorials.  In class tutorials will be pretty short and I will wok through them.  
+Grading is based on the group project, and attendance.  There will be some lectures, and in class tutorials.
 
 There will be multiple stages of the report writing process that will be submitted and graded.   
 
@@ -30,22 +36,22 @@ There will be multiple stages of the report writing process that will be submitt
 
 |Date | Subject |
 | -----------| --------------------------------|
-| 2026-08-25 | Datums, Projections, and Coordinate Reference Systems |
-| 2026-09-01 | |
-| 2026-09-08 | |
-| 2026-09-15 | |
-| 2026-09-22 | |
-| 2026-09-29 | |
-| 2026-10-06 | |
-| 2026-10-13 | |
-| 2026-10-20 | |
-| 2026-10-27 | |
-| 2026-11-03 | |
-| 2026-11-10 | |
-| 2026-11-17 | |
-| 2026-11-24 | |
-| 2026-12-01 | |
-| 2026-12-08 | |
+| 2026-08-25 | Review of Datums, Projections, and Coordinate Reference Systems |
+| 2026-09-01 | Geodesic discrete global grid systems |
+| 2026-09-08 | TBD |
+| 2026-09-15 | TBD |
+| 2026-09-22 | TBD |
+| 2026-09-29 | TBD |
+| 2026-10-06 | TBD |
+| 2026-10-13 | TBD |
+| 2026-10-20 | TBD |
+| 2026-10-27 | TBD |
+| 2026-11-03 | TBD |
+| 2026-11-10 | TBD |
+| 2026-11-17 | TBD |
+| 2026-11-24 | TBD |
+| 2026-12-01 | TBD |
+| 2026-12-08 | TBD |
 
 
 

@@ -51,7 +51,7 @@ navigation-mode: vertical
 
 
 __Syllabus__  
-x
+[Sylabus](docs/syllibi/syllabus_fall_2026.html)
 
 
 
@@ -62,11 +62,16 @@ __Projects__
 
 ~~[Detection of Abandoned Logging Roads]()~~
 
-[Birds]()
+[Mockingbird Habitat Site Suitability]()
 
 [Rat Poison Map]()
 
 [Pixelwise T-test](projects/pwtt.qmd)
+
+[Manzanita Habitat Mapping Using Deep Learning]()
+
+[Regional Habitat Suitability & Distribution Modeling for _Clarkia speciosa_ subsp. _immaculata_ and _Lupinus ludovicianus_]()
+
 :::
 
 

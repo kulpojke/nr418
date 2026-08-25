@@ -1,1 +1,1 @@
-[Slides](https://kulpojke.github.io/nr418/#/2/4)
+[Class Site](https://kulpojke.github.io/nr418/#/2/4)
