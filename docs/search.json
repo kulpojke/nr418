@@ -126,6 +126,62 @@
     "text": "Recommended first milestone\nBefore building a multi-user application, require each team to demonstrate this complete vertical slice:\n\nExtract approximately 500–2,000 Overture buildings from a pilot AOI.\nAssign them uniquely to H3 cells.\nLoad one pair of pre/post images.\nNavigate to a selected H3 cell.\nLabel and persist at least 25 buildings.\nExport records containing full building, imagery, task, and annotation provenance.\n\nOnce that works reliably, students can add collaboration, task locking, QA, dashboards, and broader imagery support."
   },
   {
+    "objectID": "demos/h3_building_damage.html",
+    "href": "demos/h3_building_damage.html",
+    "title": "H3 demonstration: Building damage hotspots",
+    "section": "",
+    "text": "Where was building destruction concentrated, and how does the answer change with the spatial scale of analysis?\nThe numerator is the number of destroyed buildings in an H3 cell. The denominator is the number of assessed buildings in that cell:\n\\[\n\\text{percent destroyed} =\n100 \\times \\frac{\\text{destroyed buildings}}{\\text{assessed buildings}}\n\\]\nCells with very few assessed buildings can produce extreme but unreliable percentages. The demonstration therefore maps the assessment count alongside the percentage and suppresses cells below a stated minimum sample size."
+  },
+  {
+    "objectID": "demos/h3_building_damage.html#question",
+    "href": "demos/h3_building_damage.html#question",
+    "title": "H3 demonstration: Building damage hotspots",
+    "section": "",
+    "text": "Where was building destruction concentrated, and how does the answer change with the spatial scale of analysis?\nThe numerator is the number of destroyed buildings in an H3 cell. The denominator is the number of assessed buildings in that cell:\n\\[\n\\text{percent destroyed} =\n100 \\times \\frac{\\text{destroyed buildings}}{\\text{assessed buildings}}\n\\]\nCells with very few assessed buildings can produce extreme but unreliable percentages. The demonstration therefore maps the assessment count alongside the percentage and suppresses cells below a stated minimum sample size."
+  },
+  {
+    "objectID": "demos/h3_building_damage.html#setup",
+    "href": "demos/h3_building_damage.html#setup",
+    "title": "H3 demonstration: Building damage hotspots",
+    "section": "Setup",
+    "text": "Setup\nInstall the required packages if they are not already available:\npython -m pip install geopandas h3 matplotlib\nEdit only this configuration block when the dataset is available. The input layer may contain points or building polygons, but it must have a coordinate reference system and one damage-status field.\n\nfrom pathlib import Path\n\nDATA_PATH = Path(\"../data/building_damage.gpkg\")  # TODO: replace\nLAYER = None                                  # TODO: layer name, if needed\nDAMAGE_FIELD = \"damage_status\"                # TODO: replace\n\n# TODO: replace these with the exact normalized values in the dataset.\nDESTROYED_LABELS = {\"destroyed\"}\nEXCLUDED_LABELS = {\"unassessed\", \"unknown\", \"not visible\"}\n\nH3_RESOLUTION = 8\nMIN_ASSESSED_BUILDINGS = 10\n\nBefore continuing, inspect the actual categories. This catches capitalization, trailing spaces, and unexpected values before they affect the denominator.\n\nimport geopandas as gpd\n\nread_options = {\"layer\": LAYER} if LAYER else {}\nbuildings = gpd.read_file(DATA_PATH, **read_options)\n\nif buildings.crs is None:\n    raise ValueError(\"The building layer must have a defined CRS.\")\n\nprint(buildings[DAMAGE_FIELD].value_counts(dropna=False))"
+  },
+  {
+    "objectID": "demos/h3_building_damage.html#assign-buildings-to-h3-cells",
+    "href": "demos/h3_building_damage.html#assign-buildings-to-h3-cells",
+    "title": "H3 demonstration: Building damage hotspots",
+    "section": "Assign buildings to H3 cells",
+    "text": "Assign buildings to H3 cells\nFor polygon records, representative_point() gives each building one unique location while keeping the point inside its footprint. H3 expects latitude and longitude in WGS84.\n\nimport h3\n\nlocations = buildings.geometry.representative_point()\nlocations = gpd.GeoSeries(locations, crs=buildings.crs).to_crs(\"EPSG:4326\")\n\nbuildings[\"h3_cell\"] = [\n    h3.latlng_to_cell(point.y, point.x, H3_RESOLUTION)\n    for point in locations\n]\n\nNormalize the status field and explicitly distinguish assessed buildings from records that should not enter the percentage calculation.\n\nstatus = buildings[DAMAGE_FIELD].astype(\"string\").str.strip().str.lower()\ndestroyed_labels = {value.lower() for value in DESTROYED_LABELS}\nexcluded_labels = {value.lower() for value in EXCLUDED_LABELS}\n\nbuildings[\"assessed\"] = status.notna() & ~status.isin(excluded_labels)\nbuildings[\"destroyed\"] = buildings[\"assessed\"] & status.isin(destroyed_labels)\n\nassessed = buildings.loc[buildings[\"assessed\"]].copy()"
+  },
+  {
+    "objectID": "demos/h3_building_damage.html#calculate-hotspot-statistics",
+    "href": "demos/h3_building_damage.html#calculate-hotspot-statistics",
+    "title": "H3 demonstration: Building damage hotspots",
+    "section": "Calculate hotspot statistics",
+    "text": "Calculate hotspot statistics\n\nsummary = (\n    assessed.groupby(\"h3_cell\")\n    .agg(\n        assessed_buildings=(\"assessed\", \"size\"),\n        destroyed_buildings=(\"destroyed\", \"sum\"),\n    )\n    .reset_index()\n)\n\nsummary[\"percent_destroyed\"] = (\n    100 * summary[\"destroyed_buildings\"] / summary[\"assessed_buildings\"]\n)\nsummary[\"enough_observations\"] = (\n    summary[\"assessed_buildings\"] &gt;= MIN_ASSESSED_BUILDINGS\n)\n\nsummary.sort_values(\"percent_destroyed\", ascending=False).head(10)\n\nConvert the cell identifiers to polygons for mapping. H3 returns boundary coordinates as latitude-longitude pairs, while Shapely expects longitude first.\n\nfrom shapely.geometry import Polygon\n\ndef cell_polygon(cell):\n    return Polygon([\n        (longitude, latitude)\n        for latitude, longitude in h3.cell_to_boundary(cell)\n    ])\n\nhexagons = gpd.GeoDataFrame(\n    summary,\n    geometry=summary[\"h3_cell\"].map(cell_polygon),\n    crs=\"EPSG:4326\",\n)"
+  },
+  {
+    "objectID": "demos/h3_building_damage.html#compare-buildings-with-the-h3-summary",
+    "href": "demos/h3_building_damage.html#compare-buildings-with-the-h3-summary",
+    "title": "H3 demonstration: Building damage hotspots",
+    "section": "Compare buildings with the H3 summary",
+    "text": "Compare buildings with the H3 summary\nThe first panel shows individual assessed buildings. The second exposes the denominator, and the third shows the percentage only where the sample-size rule is met. Use the same extent in all three panels so the aggregation is visually honest.\n\nimport matplotlib.pyplot as plt\n\nmap_crs = \"EPSG:3857\"\nassessed_map = assessed.to_crs(map_crs)\nhexagons_map = hexagons.to_crs(map_crs)\nstable_hexagons = hexagons_map.loc[hexagons_map[\"enough_observations\"]]\n\nfig, axes = plt.subplots(1, 3, figsize=(16, 6), constrained_layout=True)\n\nassessed_map.plot(\n    ax=axes[0],\n    column=\"destroyed\",\n    categorical=True,\n    cmap=\"Set1\",\n    markersize=5,\n    legend=True,\n)\naxes[0].set_title(\"Individual building assessments\")\n\nhexagons_map.plot(\n    ax=axes[1],\n    column=\"assessed_buildings\",\n    cmap=\"Blues\",\n    edgecolor=\"white\",\n    linewidth=0.4,\n    legend=True,\n    legend_kwds={\"label\": \"Assessed buildings\"},\n)\naxes[1].set_title(\"Assessed buildings per cell\")\n\nstable_hexagons.plot(\n    ax=axes[2],\n    column=\"percent_destroyed\",\n    cmap=\"YlOrRd\",\n    vmin=0,\n    vmax=100,\n    edgecolor=\"white\",\n    linewidth=0.4,\n    legend=True,\n    legend_kwds={\"label\": \"Buildings destroyed (%)\"},\n)\naxes[2].set_title(\n    f\"Damage hotspots (minimum n = {MIN_ASSESSED_BUILDINGS})\"\n)\n\nx_limits = axes[0].get_xlim()\ny_limits = axes[0].get_ylim()\nfor axis in axes:\n    axis.set_xlim(x_limits)\n    axis.set_ylim(y_limits)\n    axis.set_axis_off()\n\nplt.show()"
+  },
+  {
+    "objectID": "demos/h3_building_damage.html#scale-experiment",
+    "href": "demos/h3_building_damage.html#scale-experiment",
+    "title": "H3 demonstration: Building damage hotspots",
+    "section": "Scale experiment",
+    "text": "Scale experiment\nRerun the workflow at H3 resolutions 7, 8, and 9. Ask which patterns remain stable, which appear only at one resolution, and how the number of assessed buildings per cell changes. This demonstrates that H3 cell IDs make a multi-scale analysis repeatable, but do not eliminate the modifiable areal unit problem."
+  },
+  {
+    "objectID": "demos/h3_building_damage.html#interpretation-checklist",
+    "href": "demos/h3_building_damage.html#interpretation-checklist",
+    "title": "H3 demonstration: Building damage hotspots",
+    "section": "Interpretation checklist",
+    "text": "Interpretation checklist\n\nTreat the result as the percentage of assessed buildings destroyed, not the percentage of all buildings destroyed.\nShow or report the denominator with every percentage.\nState the H3 resolution and minimum assessment count.\nCheck whether assessment coverage varies geographically.\nDo not imply that an empty or suppressed cell has no damage.\nCompare adjacent resolutions before calling a pattern a hotspot."
+  },
+  {
     "objectID": "index.html#review-of-projections-and-grids",
     "href": "index.html#review-of-projections-and-grids",
     "title": "NR 418",
@@ -173,6 +229,20 @@
     "title": "NR 418",
     "section": "Why a hexagonal grid?",
     "text": "Why a hexagonal grid?\n\n\nimage: Isaac Brodsky"
+  },
+  {
+    "objectID": "index.html#demonstration-building-damage-hotspots",
+    "href": "index.html#demonstration-building-damage-hotspots",
+    "title": "NR 418",
+    "section": "Demonstration: Building damage hotspots",
+    "text": "Demonstration: Building damage hotspots\nQuestion: Where was building destruction concentrated?\n\nAssign each assessed building to an H3 cell.\nCount assessed and destroyed buildings in each cell.\nMap the percentage destroyed.\nRepeat at adjacent H3 resolutions.\n\n\\[\n\\text{percent destroyed} =\n100 \\times \\frac{\\text{destroyed buildings}}{\\text{assessed buildings}}\n\\]\nOpen the building-damage demonstration"
+  },
+  {
+    "objectID": "index.html#what-does-h3-add",
+    "href": "index.html#what-does-h3-add",
+    "title": "NR 418",
+    "section": "What does H3 add?",
+    "text": "What does H3 add?\n\nA geographic identifier replaces a repeated point-in-polygon spatial join.\nThe same workflow works at multiple, explicitly named resolutions.\nEach cell has a consistent neighborhood for local comparisons.\nNew assessments can be assigned to the same reporting units immediately.\n\nBut: a cell with 1 destroyed building out of 1 assessed building is not equivalent to a cell with 100 out of 100. Always show the denominator and suppress or flag cells with small sample sizes."
   },
   {
     "objectID": "syllibi/syllabus_fall_2026.html",

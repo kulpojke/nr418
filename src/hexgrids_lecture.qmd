@@ -174,4 +174,29 @@ Photo: [Philipp Hienstorfer](https://commons.wikimedia.org/wiki/User:Hienstorfer
 image: [Isaac Brodsky](https://www.uber.com/us/en/blog/h3/)
 :::
 
+## Demonstration: Building damage hotspots {style="font-size:0.7em"}
 
+**Question:** Where was building destruction concentrated?
+
+1. Assign each assessed building to an H3 cell.
+2. Count assessed and destroyed buildings in each cell.
+3. Map the percentage destroyed.
+4. Repeat at adjacent H3 resolutions.
+
+$$
+\text{percent destroyed} =
+100 \times \frac{\text{destroyed buildings}}{\text{assessed buildings}}
+$$
+
+[Open the building-damage demonstration](demos/h3_building_damage.qmd)
+
+## What does H3 add? {style="font-size:0.7em"}
+
++ A geographic identifier replaces a repeated point-in-polygon spatial join.
++ The same workflow works at multiple, explicitly named resolutions.
++ Each cell has a consistent neighborhood for local comparisons.
++ New assessments can be assigned to the same reporting units immediately.
+
+**But:** a cell with 1 destroyed building out of 1 assessed building is not
+equivalent to a cell with 100 out of 100. Always show the denominator and
+suppress or flag cells with small sample sizes.

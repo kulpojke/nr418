@@ -350,6 +350,31 @@ window.addEventListener("load", function () {
 <img data-src="img/why_hex.png" class="r-stretch"><div class="attribution">
 <p>image: <a href="https://www.uber.com/us/en/blog/h3/">Isaac Brodsky</a></p>
 </div>
+</section>
+<section id="demonstration-building-damage-hotspots" class="slide level2 center" style="font-size:0.7em">
+<h2>Demonstration: Building damage hotspots</h2>
+<p><strong>Question:</strong> Where was building destruction concentrated?</p>
+<ol type="1">
+<li>Assign each assessed building to an H3 cell.</li>
+<li>Count assessed and destroyed buildings in each cell.</li>
+<li>Map the percentage destroyed.</li>
+<li>Repeat at adjacent H3 resolutions.</li>
+</ol>
+<p><span class="math display">\[
+\text{percent destroyed} =
+100 \times \frac{\text{destroyed buildings}}{\text{assessed buildings}}
+\]</span></p>
+<p><a href="./demos/h3_building_damage.html">Open the building-damage demonstration</a></p>
+</section>
+<section id="what-does-h3-add" class="slide level2 center" style="font-size:0.7em">
+<h2>What does H3 add?</h2>
+<ul>
+<li>A geographic identifier replaces a repeated point-in-polygon spatial join.</li>
+<li>The same workflow works at multiple, explicitly named resolutions.</li>
+<li>Each cell has a consistent neighborhood for local comparisons.</li>
+<li>New assessments can be assigned to the same reporting units immediately.</li>
+</ul>
+<p><strong>But:</strong> a cell with 1 destroyed building out of 1 assessed building is not equivalent to a cell with 100 out of 100. Always show the denominator and suppress or flag cells with small sample sizes.</p>
 
 
 </section></section>

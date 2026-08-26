@@ -3,6 +3,7 @@ project:
   output-dir: docs
   render:
     - index.qmd
+    - demos/h3_building_damage.qmd
     - syllibi/syllabus_fall_2026.qmd
     - projects/annotations.qmd
     - projects/plastics.qmd
