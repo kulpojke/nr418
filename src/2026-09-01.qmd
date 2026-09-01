@@ -25,4 +25,4 @@ __Next week__ (2026-09-08) Project outline v1
 
 + Steps of study (this can be a hand drawn flowchart if you wish)
 + List of data needs, do you know where to find this data?
-+ How will you break up the responsibilities
++ How will you break up the responsibilities    
