@@ -1,0 +1,222 @@
+---
+title: "H3 demonstration: Building damage hotspots"
+format:
+  html:
+    toc: true
+    code-fold: false
+jupyter: python3
+execute:
+  enabled: false # TODO: change to true after adding and configuring the data
+---
+
+## Question
+
+Where was building destruction concentrated, and how does the answer change with
+the spatial scale of analysis?
+
+The numerator is the number of destroyed buildings in an H3 cell. The
+denominator is the number of assessed buildings in that cell:
+
+$$
+\text{percent destroyed} =
+100 \times \frac{\text{destroyed buildings}}{\text{assessed buildings}}
+$$
+
+Cells with very few assessed buildings can produce extreme but unreliable
+percentages. The demonstration therefore maps the assessment count alongside
+the percentage and suppresses cells below a stated minimum sample size.
+
+## Setup
+
+Install the required packages if they are not already available:
+
+```bash
+python -m pip install geopandas h3 matplotlib
+```
+
+Edit only this configuration block when the dataset is available. The input
+layer may contain points or building polygons, but it must have a coordinate
+reference system and one damage-status field.
+
+```{python}
+from pathlib import Path
+
+DATA_PATH = Path("../data/building_damage.gpkg")  # TODO: replace
+LAYER = None                                  # TODO: layer name, if needed
+DAMAGE_FIELD = "damage_status"                # TODO: replace
+
+# TODO: replace these with the exact normalized values in the dataset.
+DESTROYED_LABELS = {"destroyed"}
+EXCLUDED_LABELS = {"unassessed", "unknown", "not visible"}
+
+H3_RESOLUTION = 8
+MIN_ASSESSED_BUILDINGS = 10
+```
+
+Before continuing, inspect the actual categories. This catches capitalization,
+trailing spaces, and unexpected values before they affect the denominator.
+
+```{python}
+import geopandas as gpd
+
+read_options = {"layer": LAYER} if LAYER else {}
+buildings = gpd.read_file(DATA_PATH, **read_options)
+
+if buildings.crs is None:
+    raise ValueError("The building layer must have a defined CRS.")
+
+print(buildings[DAMAGE_FIELD].value_counts(dropna=False))
+```
+
+## Assign buildings to H3 cells
+
+For polygon records, `representative_point()` gives each building one unique
+location while keeping the point inside its footprint. H3 expects latitude and
+longitude in WGS84.
+
+```{python}
+import h3
+
+locations = buildings.geometry.representative_point()
+locations = gpd.GeoSeries(locations, crs=buildings.crs).to_crs("EPSG:4326")
+
+buildings["h3_cell"] = [
+    h3.latlng_to_cell(point.y, point.x, H3_RESOLUTION)
+    for point in locations
+]
+```
+
+Normalize the status field and explicitly distinguish assessed buildings from
+records that should not enter the percentage calculation.
+
+```{python}
+status = buildings[DAMAGE_FIELD].astype("string").str.strip().str.lower()
+destroyed_labels = {value.lower() for value in DESTROYED_LABELS}
+excluded_labels = {value.lower() for value in EXCLUDED_LABELS}
+
+buildings["assessed"] = status.notna() & ~status.isin(excluded_labels)
+buildings["destroyed"] = buildings["assessed"] & status.isin(destroyed_labels)
+
+assessed = buildings.loc[buildings["assessed"]].copy()
+```
+
+## Calculate hotspot statistics
+
+```{python}
+summary = (
+    assessed.groupby("h3_cell")
+    .agg(
+        assessed_buildings=("assessed", "size"),
+        destroyed_buildings=("destroyed", "sum"),
+    )
+    .reset_index()
+)
+
+summary["percent_destroyed"] = (
+    100 * summary["destroyed_buildings"] / summary["assessed_buildings"]
+)
+summary["enough_observations"] = (
+    summary["assessed_buildings"] >= MIN_ASSESSED_BUILDINGS
+)
+
+summary.sort_values("percent_destroyed", ascending=False).head(10)
+```
+
+Convert the cell identifiers to polygons for mapping. H3 returns boundary
+coordinates as latitude-longitude pairs, while Shapely expects longitude first.
+
+```{python}
+from shapely.geometry import Polygon
+
+def cell_polygon(cell):
+    return Polygon([
+        (longitude, latitude)
+        for latitude, longitude in h3.cell_to_boundary(cell)
+    ])
+
+hexagons = gpd.GeoDataFrame(
+    summary,
+    geometry=summary["h3_cell"].map(cell_polygon),
+    crs="EPSG:4326",
+)
+```
+
+## Compare buildings with the H3 summary
+
+The first panel shows individual assessed buildings. The second exposes the
+denominator, and the third shows the percentage only where the sample-size rule
+is met. Use the same extent in all three panels so the aggregation is visually
+honest.
+
+```{python}
+import matplotlib.pyplot as plt
+
+map_crs = "EPSG:3857"
+assessed_map = assessed.to_crs(map_crs)
+hexagons_map = hexagons.to_crs(map_crs)
+stable_hexagons = hexagons_map.loc[hexagons_map["enough_observations"]]
+
+fig, axes = plt.subplots(1, 3, figsize=(16, 6), constrained_layout=True)
+
+assessed_map.plot(
+    ax=axes[0],
+    column="destroyed",
+    categorical=True,
+    cmap="Set1",
+    markersize=5,
+    legend=True,
+)
+axes[0].set_title("Individual building assessments")
+
+hexagons_map.plot(
+    ax=axes[1],
+    column="assessed_buildings",
+    cmap="Blues",
+    edgecolor="white",
+    linewidth=0.4,
+    legend=True,
+    legend_kwds={"label": "Assessed buildings"},
+)
+axes[1].set_title("Assessed buildings per cell")
+
+stable_hexagons.plot(
+    ax=axes[2],
+    column="percent_destroyed",
+    cmap="YlOrRd",
+    vmin=0,
+    vmax=100,
+    edgecolor="white",
+    linewidth=0.4,
+    legend=True,
+    legend_kwds={"label": "Buildings destroyed (%)"},
+)
+axes[2].set_title(
+    f"Damage hotspots (minimum n = {MIN_ASSESSED_BUILDINGS})"
+)
+
+x_limits = axes[0].get_xlim()
+y_limits = axes[0].get_ylim()
+for axis in axes:
+    axis.set_xlim(x_limits)
+    axis.set_ylim(y_limits)
+    axis.set_axis_off()
+
+plt.show()
+```
+
+## Scale experiment
+
+Rerun the workflow at H3 resolutions 7, 8, and 9. Ask which patterns remain
+stable, which appear only at one resolution, and how the number of assessed
+buildings per cell changes. This demonstrates that H3 cell IDs make a multi-scale
+analysis repeatable, but do not eliminate the modifiable areal unit problem.
+
+## Interpretation checklist
+
+- Treat the result as the percentage of **assessed** buildings destroyed, not
+  the percentage of all buildings destroyed.
+- Show or report the denominator with every percentage.
+- State the H3 resolution and minimum assessment count.
+- Check whether assessment coverage varies geographically.
+- Do not imply that an empty or suppressed cell has no damage.
+- Compare adjacent resolutions before calling a pattern a hotspot.
