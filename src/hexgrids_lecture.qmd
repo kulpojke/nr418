@@ -2,16 +2,8 @@
 
 ![](../img/hexgrids.png)
 
-## Review of projections and grids {style="font-size:0.7em"}
-
-Slides here with terms, then fadein out to explanation, so students can try to explain first
-
-gnomonic projection - project globe onto a developable surface as though a light were shining from the center of the earth
 
 
-## Projections are not perfect {style="font-size:0.7em"}
-
-+ distortions
 
 ## Square grids {style="font-size:0.7em"}
 
@@ -188,15 +180,14 @@ $$
 100 \times \frac{\text{destroyed buildings}}{\text{assessed buildings}}
 $$
 
-[Open the building-damage demonstration](demos/h3_building_damage.qmd)
+[Open the building-damage demonstration](https://kulpojke.github.io/damage-map-web-map/)
 
 ## What does H3 add? {style="font-size:0.7em"}
 
 + A geographic identifier replaces a repeated point-in-polygon spatial join.
-+ The same workflow works at multiple, explicitly named resolutions.
++ The same workflow works at different resolutions.
 + Each cell has a consistent neighborhood for local comparisons.
-+ New assessments can be assigned to the same reporting units immediately.
 
-**But:** a cell with 1 destroyed building out of 1 assessed building is not
-equivalent to a cell with 100 out of 100. Always show the denominator and
+**Note to self:** a cell with 1 destroyed building out of 1 assessed building is not
+equivalent to a cell with 100 out of 100. Show the fraction and
 suppress or flag cells with small sample sizes.

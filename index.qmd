@@ -49,7 +49,6 @@ navigation-mode: vertical
 [Use arrows or menu in bottom left corner to navigate amongst slides.]{style="font-size:0.6em"}
 
 
-
 __Syllabus__  
 [Syllabus](syllibi/syllabus_fall_2026.qmd)
 
@@ -73,7 +72,6 @@ __Projects__
 [Regional Habitat Suitability & Distribution Modeling for _Clarkia speciosa_ subsp. _immaculata_ and _Lupinus ludovicianus_]()
 
 :::
-
 
 :::
 
