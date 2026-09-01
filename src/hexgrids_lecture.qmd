@@ -1,6 +1,6 @@
 # Hexgrids, specifically H3
 
-![](../img/hexgrids.png)
+![](img/hexgrids.png)
 
 
 
