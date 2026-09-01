@@ -8,7 +8,8 @@ format:
 resources:
   - ../srcstyle/terminal_theme.js
 ---
-
+[Paper](https://www.sciencedirect.com/science/article/pii/S0034425725004298)
+[GitHub](https://github.com/oballinger/PWTT)
 
 # Repurposing the Pixel Wise T-Test for Wildfire Damage Detection
 
