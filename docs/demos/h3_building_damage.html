@@ -194,7 +194,7 @@ window.Quarto = {
 <p>Install the required packages if they are not already available:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> pip install geopandas h3 matplotlib</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Edit only this configuration block when the dataset is available. The input layer may contain points or building polygons, but it must have a coordinate reference system and one damage-status field.</p>
-<div id="dc46b24d" class="cell">
+<div id="d836a467" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>DATA_PATH <span class="op">=</span> Path(<span class="st">"../data/building_damage.gpkg"</span>)  <span class="co"># </span><span class="al">TODO</span><span class="co">: replace</span></span>
@@ -209,7 +209,7 @@ window.Quarto = {
 <span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>MIN_ASSESSED_BUILDINGS <span class="op">=</span> <span class="dv">10</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Before continuing, inspect the actual categories. This catches capitalization, trailing spaces, and unexpected values before they affect the denominator.</p>
-<div id="efe0b83a" class="cell">
+<div id="8c60e979" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> geopandas <span class="im">as</span> gpd</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>read_options <span class="op">=</span> {<span class="st">"layer"</span>: LAYER} <span class="cf">if</span> LAYER <span class="cf">else</span> {}</span>
@@ -224,7 +224,7 @@ window.Quarto = {
 <section id="assign-buildings-to-h3-cells" class="level2">
 <h2 class="anchored" data-anchor-id="assign-buildings-to-h3-cells">Assign buildings to H3 cells</h2>
 <p>For polygon records, <code>representative_point()</code> gives each building one unique location while keeping the point inside its footprint. H3 expects latitude and longitude in WGS84.</p>
-<div id="4838dbb3" class="cell">
+<div id="8db2193c" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> h3</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>locations <span class="op">=</span> buildings.geometry.representative_point()</span>
@@ -236,7 +236,7 @@ window.Quarto = {
 <span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Normalize the status field and explicitly distinguish assessed buildings from records that should not enter the percentage calculation.</p>
-<div id="07bc4d0b" class="cell">
+<div id="d3bd7824" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>status <span class="op">=</span> buildings[DAMAGE_FIELD].astype(<span class="st">"string"</span>).<span class="bu">str</span>.strip().<span class="bu">str</span>.lower()</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>destroyed_labels <span class="op">=</span> {value.lower() <span class="cf">for</span> value <span class="kw">in</span> DESTROYED_LABELS}</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>excluded_labels <span class="op">=</span> {value.lower() <span class="cf">for</span> value <span class="kw">in</span> EXCLUDED_LABELS}</span>
@@ -249,7 +249,7 @@ window.Quarto = {
 </section>
 <section id="calculate-hotspot-statistics" class="level2">
 <h2 class="anchored" data-anchor-id="calculate-hotspot-statistics">Calculate hotspot statistics</h2>
-<div id="879ec480" class="cell">
+<div id="f0d5e6bc" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>summary <span class="op">=</span> (</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    assessed.groupby(<span class="st">"h3_cell"</span>)</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    .agg(</span>
@@ -269,7 +269,7 @@ window.Quarto = {
 <span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>summary.sort_values(<span class="st">"percent_destroyed"</span>, ascending<span class="op">=</span><span class="va">False</span>).head(<span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Convert the cell identifiers to polygons for mapping. H3 returns boundary coordinates as latitude-longitude pairs, while Shapely expects longitude first.</p>
-<div id="cdb05873" class="cell">
+<div id="2b9990e1" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> shapely.geometry <span class="im">import</span> Polygon</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> cell_polygon(cell):</span>
@@ -288,7 +288,7 @@ window.Quarto = {
 <section id="compare-buildings-with-the-h3-summary" class="level2">
 <h2 class="anchored" data-anchor-id="compare-buildings-with-the-h3-summary">Compare buildings with the H3 summary</h2>
 <p>The first panel shows individual assessed buildings. The second exposes the denominator, and the third shows the percentage only where the sample-size rule is met. Use the same extent in all three panels so the aggregation is visually honest.</p>
-<div id="22721deb" class="cell">
+<div id="cea8c021" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>map_crs <span class="op">=</span> <span class="st">"EPSG:3857"</span></span>
