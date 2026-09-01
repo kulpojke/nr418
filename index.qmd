@@ -76,3 +76,4 @@ __Projects__
 :::
 
 {{< include src/hexgrids_lecture.qmd >}}
+{{< include src/2026-09-01.qmd >}}

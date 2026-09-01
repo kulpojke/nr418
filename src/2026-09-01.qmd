@@ -1,0 +1,28 @@
+# Today
+
+H3 grids
+
+9:00 - Remote Sensing of Agricultural Plastics
+9:30 ~ Mockingbird Site Suitability
+
+Intro to other projects?
+
+Form groups
+
+# Schedule
+
+| Assignment	         | Weight | Due Date |
+|------------------------| -------|----------|
+| Participation	 | 10%    | 2026-09-15 |
+| Project Outline		 | 10%    | 2026-09-15 |
+| Draft 1       		 | 10%    | 2026-10-06 |
+| Draft 2	     		 | 20%    | 2026-11-17 |
+| Final Project Report	 | 30%    | 2026-12-08 |
+| Presentation           | 20%    | 2026-12-08 |
+
+
+__Next week__ (2026-09-08) Project outline v1
+
++ Steps of study (this can be a hand drawn flowchart if you wish)
++ List of data needs, do you know where to find this data?
++ How will you break up the responsibilities
