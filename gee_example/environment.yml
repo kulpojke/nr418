@@ -1,0 +1,12 @@
+name: ee
+channels:
+  - conda-forge
+dependencies:
+  - python=3.13
+  - earthengine-api
+  - geemap
+  - geopandas
+  - ipykernel
+  - ipywidgets
+  - jupyterlab
+  - tqdm

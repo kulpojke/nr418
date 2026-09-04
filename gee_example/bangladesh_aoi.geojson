@@ -1,0 +1,8 @@
+{
+"type": "FeatureCollection",
+"name": "bangladesh_aoi",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "MINX": 89.173107, "MINY": 22.184862, "MAXX": 89.363899, "MAXY": 22.323877, "CNTX": 89.268503, "CNTY": 22.2543695, "AREA": 0.026522949880000361, "PERIM": 0.659614, "HEIGHT": 0.139015, "WIDTH": 0.190792 }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 89.173107, 22.184862 ], [ 89.363899, 22.184862 ], [ 89.363899, 22.323877 ], [ 89.173107, 22.323877 ], [ 89.173107, 22.184862 ] ] ] } }
+]
+}
