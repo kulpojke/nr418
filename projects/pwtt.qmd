@@ -73,7 +73,9 @@ The event should have enough damaged and undamaged buildings to make [precision 
 
 You can use the code from the GitHub repo as a starting point. Make reasonable changes such as renaming variables in your notebook or comments so the workflow refers to fire dates rather than war dates. 
 
-### Stratification of Data
+### Validation and Performance Assessment
+
+#### Stratified comparisons
 
 Stratification should be based on pre-fire vegetation and land-cover context, not on the PWTT output itself. The goal is to ask where PWTT works well or fails and why. For example, are false positives concentrated around intact houses with burned vegetation nearby.
 
@@ -81,6 +83,7 @@ Create one table with one row per building (buildings from all fires/AOIs are po
 
 ```text
 building_id
+fire_id
 damage_label
 PWTT_T_mean
 PWTT_T_max
@@ -112,6 +115,36 @@ dense built-up
 ```
 
 For each stratum, report precision, recall, F1, and the number of damaged and undamaged buildings. The writeup should explicitly compare error patterns across strata. For example, if precision drops sharply in high-tree-cover parcels, that is evidence that PWTT is responding to vegetation change as well as structure change.
+
+#### Logistic regression of false positives and false negatives
+
+In addition to comparing strata, fit two binomial generalized linear models (GLMs) with a logit link, also called logistic regressions. These models ask which conditions are associated with PWTT errors while accounting for several predictors together. Keep continuous predictors continuous and treat `landcover_class` as categorical. Use only buildings with usable reference labels, excluding or separately reporting uncertain labels, buildings that are not visible, and footprint mismatches.
+
+**False-positive model:** Include only buildings labeled undamaged by the reference data. Set `false_positive = 1` when PWTT predicts damage and `false_positive = 0` when PWTT correctly predicts no damage. This model asks: *Which conditions make an intact building more likely to be incorrectly flagged?* For example, does the probability of a false positive increase with surrounding burn severity or the PWTT signal in the nearby ring?
+
+**False-negative model:** Include only buildings labeled damaged by the reference data. Set `false_negative = 1` when PWTT predicts no damage and `false_negative = 0` when PWTT correctly predicts damage. This model asks: *Which conditions make a damaged building more likely to be missed?* For example, is the probability of a false negative higher around buildings with greater pre-fire tree cover?
+
+Start with the same context predictors in both models:
+
+```text
+false_positive ~ PWTT_ring_10_30m + pre_fire_tree_cover_30m
+               + pre_fire_NDVI_30m + landcover_class + dNBR_30m
+
+false_negative ~ PWTT_ring_10_30m + pre_fire_tree_cover_30m
+               + pre_fire_NDVI_30m + landcover_class + dNBR_30m
+```
+
+Higher predicted probabilities indicate a greater risk of the corresponding error. These are conditional error probabilities: the false-positive probability is conditional on a building being undamaged, and the false-negative probability is conditional on it being damaged. They complement the stratified precision and recall results.
+
+As an extension, assess whether adding `PWTT_T_mean` or `PWTT_T_max` improves prediction of errors. Interpret these terms carefully because a building score used to threshold the PWTT prediction also helps define the error outcome. Its relationship with error probability may be nonlinear. Check for strong correlations, especially between mean and maximum PWTT scores and between tree cover and NDVI; correlated predictors may be difficult to rank individually.
+
+For fitting, validation, and interpretation:
+
+- Choose the PWTT threshold using training data, then evaluate errors on held-out buildings. Do not choose the threshold using the same labels used for the final accuracy assessment.
+- Retain `fire_id` and building locations. Account for differences among fires in within-study comparisons, and keep nearby buildings together when creating spatial validation splits. Use leave-one-fire-out validation to assess prediction on a new fire; with only three to five fires, treat transferability conclusions as tentative. A categorical fire effect fitted for known fires cannot directly estimate the effect of an unseen fire.
+- To assess which predictors contribute most, compare held-out log loss or Brier score before and after removing and refitting a predictor or a related group of predictors. Perform predictor selection within the training data. Do not rank predictive importance using p-values alone.
+- Report the number of errors and correct predictions in each subset. Simplify the models if errors or land-cover categories are too sparse to support all terms.
+- Present predicted error probabilities across meaningful ranges of tree cover, NDVI, and burn severity, together with uncertainty intervals that account for spatial grouping. Describe associations rather than claiming that a predictor causes an error.
 
 
 ## Data Sources

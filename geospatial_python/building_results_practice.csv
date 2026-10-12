@@ -1,0 +1,14 @@
+building_id,fire_id,vegetation_class,pre_fire_tree_cover_30m,PWTT_T_mean,damage_label
+B001,Fire_A,low,10,1.0,0
+B002,Fire_A,low,15,4.0,0
+B003,Fire_A,low,20,2.0,0
+B004,Fire_A,low,12,5.0,1
+B005,Fire_A,low,18,2.0,1
+B006,Fire_A,low,8,6.0,1
+B007,Fire_B,high,65,4.0,0
+B008,Fire_B,high,80,5.0,0
+B009,Fire_B,high,70,1.0,0
+B010,Fire_B,high,75,4.0,1
+B011,Fire_B,high,90,2.0,1
+B012,Fire_B,high,85,6.0,1
+B013,Fire_B,high,60,,0
