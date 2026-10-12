@@ -9,6 +9,11 @@ resources:
   - ../srcstyle/terminal_theme.js
 ---
 
+## Class Details
+Room 10-215
+Tuesday 8:00 - 11:50
+Instructor - Michael Huggins
+Office Hours - Monday, 12:00 -1:00, 72-107
 
 ## Course Objectives
 
@@ -24,7 +29,7 @@ There will be multiple stages of the report writing process that will be submitt
 
 | Assignment				  | Weight | Due Date |
 |------------------------| -------|----------|
-| In class tutorials	 | 10%    | 2026-09-15 |
+| Participation    	 | 10%    | 2026-09-15 |
 | Project Outline		 | 10%    | 2026-09-15 |
 | Draft 1       		 | 10%    | 2026-10-06 |
 | Draft 2	     		 | 20%    | 2026-11-17 |
@@ -38,11 +43,11 @@ There will be multiple stages of the report writing process that will be submitt
 | -----------| --------------------------------|
 | 2026-08-25 | Review of Datums, Projections, and Coordinate Reference Systems |
 | 2026-09-01 | Geodesic discrete global grid systems |
-| 2026-09-08 | TBD |
-| 2026-09-15 | TBD |
-| 2026-09-22 | TBD |
-| 2026-09-29 | TBD |
-| 2026-10-06 | TBD |
+| 2026-09-08 | Open Lab |
+| 2026-09-15 | Outline Discussion |
+| 2026-09-22 | Open Lab |
+| 2026-09-29 | Google Earth Engine |
+| 2026-10-06 | Google Earth Engine |
 | 2026-10-13 | TBD |
 | 2026-10-20 | TBD |
 | 2026-10-27 | TBD |

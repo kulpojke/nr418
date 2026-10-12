@@ -57,9 +57,7 @@ __Syllabus__
 __Projects__  
 
 ::: {.project-list}
-[Remote Sensing of Agricultural Plastics](projects/plastics.qmd)
-
-~~[Detection of Abandoned Logging Roads]()~~
+[Remote Sensing of Agricultural Plastics](projects/plastics.html)
 
 [Mockingbird Habitat Site Suitability]()
 
