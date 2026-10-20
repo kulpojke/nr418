@@ -1,0 +1,26 @@
+{
+  "type": "FeatureCollection",
+  "name": "B02clip_extent",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "source": "B02clip.tif",
+        "source_crs": "EPSG:6339",
+        "aoi_crs": "EPSG:4326"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-120.6269197, 35.1245256],
+            [-120.6582207, 34.0161534],
+            [-119.4634352, 33.9875810],
+            [-119.4162330, 35.0947529],
+            [-120.6269197, 35.1245256]
+          ]
+        ]
+      }
+    }
+  ]
+}
