@@ -234,6 +234,28 @@ Sentinel-2 bands and Sentinel-1 backscatter are resampled with bilinear
 interpolation by Sentinel Hub. The final VRT applies the AOI cutline using
 nearest-neighbor grid-preserving behavior.
 
+## Tile size
+
+Use `--tile-size PIXELS` to set the maximum width and height of each download
+tile. The default is 2500; accepted values are integers from 1 through 2500.
+This option works for both Sentinel collections.
+
+For example, download tiles no larger than 1000 × 1000 pixels:
+
+```bash
+python get_sentinel.py AOI.geojson B02 B03 B04 B8A B11 B12 \
+  --tile-size 1000 \
+  --resample-to 10 \
+  --client-id --client-secret
+```
+
+Edge tiles may be smaller. Tile size controls how the output grid is divided
+into requests; `--resample-to` controls pixel resolution. Smaller tiles produce
+more requests for the same AOI.
+
+When changing tile size for an existing download, use a new `--output-dir` or
+pass `--overwrite` so tiles from the previous layout are not reused.
+
 ## Date selection
 
 Without `--date` or `--start`, the script searches the 90 days ending today.
