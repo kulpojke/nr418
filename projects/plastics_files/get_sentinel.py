@@ -772,17 +772,48 @@ def download_tile(
     transient_attempts = 0
     token_refreshed = False
     while True:
-        response = session.post(
-            PROCESS_URL,
-            headers=headers,
-            json=payload,
-            timeout=600,
-        )
+        try:
+            response = session.post(
+                PROCESS_URL,
+                headers=headers,
+                json=payload,
+                timeout=(30, 600),  # (connect, read)
+            )
+        except (
+            requests.exceptions.ChunkedEncodingError,
+            requests.exceptions.ConnectionError,
+            requests.exceptions.Timeout,
+            requests.exceptions.ContentDecodingError,
+        ) as error:
+            if transient_attempts == 5:
+                raise RuntimeError(
+                    f'Process API request failed after retries: {error}'
+                ) from error
+            transient_attempts += 1
+            delay = min(2**transient_attempts, 60)
+            print(
+                f'  network error ({type(error).__name__}); '
+                f'retry {transient_attempts}/5 in {delay} seconds',
+                flush=True,
+            )
+            time.sleep(delay)
+            continue
+
         if response.ok:
             temporary.write_bytes(response.content)
             if not valid_raster(temporary, expected_bands):
                 temporary.unlink(missing_ok=True)
-                raise RuntimeError('Process API response was not a readable TIFF')
+                # Treat a truncated/corrupt TIFF as transient too
+                if transient_attempts == 5:
+                    raise RuntimeError('Process API response was not a readable TIFF')
+                transient_attempts += 1
+                delay = min(2**transient_attempts, 60)
+                print(
+                    f'  unreadable TIFF; retry {transient_attempts}/5 in {delay} seconds',
+                    flush=True,
+                )
+                time.sleep(delay)
+                continue
             temporary.replace(destination)
             return token, token_refreshed
         if response.status_code == 401 and not token_refreshed:
@@ -799,7 +830,6 @@ def download_tile(
         delay = int(response.headers.get('Retry-After', 2**transient_attempts))
         print(f'  retrying after HTTP {response.status_code} in {delay} seconds', flush=True)
         time.sleep(delay)
-
 
 def build_vrts(
     tile_paths: list[Path],
